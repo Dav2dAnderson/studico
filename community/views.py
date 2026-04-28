@@ -1,10 +1,12 @@
 from django.shortcuts import render
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from .models import Application, Course, Lesson
 from .serializers import ApplicationSerializer, CourseSerializer, CourseDetailSerializer, LessonSerializer, LessonDetailSerializer
-from .permissions import IsAuthorOrReadOnly
+from .permissions import IsAuthorOrReadOnly, IsEnrolledOrAuthor, IsEnrolledToCourse
 # Create your views here.
 
 
@@ -35,10 +37,22 @@ class CourseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def enroll(self, request, slug=None):
+        course = self.get_object()
+        user = request.user
+        user.studying_in.add(course)
+        return Response({'status': 'enrolled'}, status=status.HTTP_200_OK)
+
 
 class LessonViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthorOrReadOnly]
     lookup_field = 'slug'
+
+    def get_permissions(self):
+        if self.action in ['retrieve', 'list']:
+            return [IsEnrolledToCourse()]
+        return [IsAuthorOrReadOnly()]
 
     def get_queryset(self):
         return Lesson.objects.filter(course__slug=self.kwargs['course_slug'])

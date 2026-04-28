@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.text import slugify
 
 from accounts.models import CustomUser
+
+from ckeditor.fields import RichTextField
 # Create your models here.
 
 
@@ -44,7 +46,7 @@ class Course(models.Model):
 class Lesson(models.Model):
     title = models.CharField(max_length=150)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lessons")
-    content = models.TextField()
+    content = RichTextField()
     file = models.FileField(upload_to="lessons/", null=True, blank=True)
     slug = models.SlugField(null=True, blank=True)
     finished = models.BooleanField(default=False)

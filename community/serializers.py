@@ -20,14 +20,25 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class CourseDetailSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer(read_only=True)
+    is_enrolled = serializers.SerializerMethodField()
     lessons = serializers.SerializerMethodField()
 
+    def get_is_enrolled(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.users.filter(id=request.user.id).exists()
+        return False
+
     def get_lessons(self, obj):
-        return LessonSerializer(obj.lessons.all(), many=True).data
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            if obj.user == request.user or obj.users.filter(id=request.user.id).exists():
+                return LessonSerializer(obj.lessons.all(), many=True).data
+        return []
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'user', 'description', 'lessons', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'user', 'description', 'is_enrolled', 'lessons', 'created_at', 'updated_at']
 
 
 class LessonSerializer(serializers.ModelSerializer):
