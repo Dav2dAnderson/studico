@@ -40,10 +40,14 @@ class IsEnrolledToCourse(BasePermission):
         if not course_slug:
             return False
 
+        if not request.user.is_authenticated:
+            return False
+
         from community.models import Course
         course = Course.objects.filter(slug=course_slug).first()
 
         if not course:
             return False
 
-        return course.users.filter(id=request.user.id).exists()
+        # Allow if user is the author OR is enrolled
+        return course.user == request.user or course.users.filter(id=request.user.id).exists()

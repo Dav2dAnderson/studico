@@ -3,13 +3,22 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import { useParams, useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, BookOpen, Clock } from "lucide-react";
+import { Loader2, ArrowLeft, BookOpen, Clock, FileUp } from "lucide-react";
 import Link from "next/link";
+import DOMPurify from "dompurify";
+
+interface LessonFile {
+  id: number;
+  file: string;
+  uploaded_at: string;
+}
 
 interface LessonDetail {
   id: number;
   title: string;
   content: string;
+  file: string | null;
+  files: LessonFile[];
   created_at: string;
   course: {
     name: string;
@@ -23,6 +32,11 @@ export default function LessonDetail() {
   const [lesson, setLesson] = useState<LessonDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const isVideo = (url: string) => {
+    const videoExtensions = ['.mp4', '.webm', '.ogg'];
+    return videoExtensions.some(ext => url.toLowerCase().endsWith(ext));
+  };
 
   useEffect(() => {
     if (!slug || !lessonSlug) return;
@@ -69,6 +83,36 @@ export default function LessonDetail() {
     );
   }
 
+  // Combine single file and multiple files into one array for display
+  const allFiles = [
+    ...(lesson.file ? [{ id: -1, file: lesson.file }] : []),
+    ...lesson.files
+  ];
+
+  // Find the first video file to play in the player
+  const videoFile = allFiles.find(f => isVideo(f.file));
+
+  const handleDownload = async (fileId: number, fileName: string) => {
+    if (fileId === -1) return; // Main file doesn't have a secure endpoint yet
+    
+    try {
+      const response = await axiosInstance.get(
+        `/courses/${slug}/lessons/${lessonSlug}/files/${fileId}/download/`,
+        { responseType: 'blob' }
+      );
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      alert("Failed to download file. Please make sure you are enrolled.");
+    }
+  };
+
   return (
     <div className="py-8 max-w-4xl mx-auto w-full px-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
@@ -95,11 +139,79 @@ export default function LessonDetail() {
           </h1>
         </div>
 
+        {/* Video Player Section */}
+        {videoFile && (
+          <div className="aspect-video bg-black">
+            <video 
+              src={videoFile.file} 
+              controls 
+              className="w-full h-full"
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        )}
+
         <div className="p-8 sm:p-12">
           <div 
-            className="prose prose-lg prose-indigo dark:prose-invert max-w-none text-slate-700 dark:text-slate-300"
-            dangerouslySetInnerHTML={{ __html: lesson.content || '<p class="italic text-slate-400">This lesson has no content yet.</p>' }}
+            className="prose prose-lg prose-indigo dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 mb-12"
+            dangerouslySetInnerHTML={{ 
+              __html: DOMPurify.sanitize(lesson.content || '<p class="italic text-slate-400">This lesson has no content yet.</p>') 
+            }}
           />
+
+          {/* Downloadable Files Section */}
+          {allFiles.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <FileUp size={20} className="text-indigo-600" />
+                Lesson Resources ({allFiles.length})
+              </h3>
+              <div className="grid grid-cols-1 gap-4">
+                {allFiles.map((f) => {
+                  const fileName = f.file.split('/').pop() || 'resource';
+                  const isMainFile = f.id === -1;
+
+                  return (
+                    <div key={f.id} className="p-5 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 overflow-hidden">
+                        <div className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-indigo-600 shadow-sm border border-slate-100 dark:border-slate-700 flex-shrink-0">
+                          <FileUp size={20} />
+                        </div>
+                        <div className="overflow-hidden">
+                          <p className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
+                            {fileName}
+                          </p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest font-black mt-0.5">
+                            {isVideo(f.file) ? 'Video Lesson' : 'Resource File'}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {isMainFile ? (
+                        <a 
+                          href={f.file} 
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm"
+                        >
+                          Download
+                        </a>
+                      ) : (
+                        <button 
+                          onClick={() => handleDownload(f.id, fileName)}
+                          className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm"
+                        >
+                          Download
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </article>
     </div>

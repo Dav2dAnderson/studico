@@ -61,3 +61,21 @@ class Lesson(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Lesson"
+        verbose_name_plural = "Lessons"
+    
+
+
+class LessonFile(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="files")
+    file = models.FileField(upload_to="lessons/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.file.name} in {self.lesson.title}"
+    
+    class Meta:
+        verbose_name = "LessonFile"
+        verbose_name_plural = "LessonFiles"

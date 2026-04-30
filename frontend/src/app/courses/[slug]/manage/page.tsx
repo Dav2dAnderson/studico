@@ -22,6 +22,8 @@ interface Lesson {
   title: string;
   slug: string;
   content: string;
+  file: string | null;
+  files: LessonFile[];
   created_at: string;
 }
 
@@ -48,12 +50,22 @@ export default function ManageCourse() {
   
   // New lesson form state
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newLesson, setNewLesson] = useState({ title: "", content: "" });
+  const [newLesson, setNewLesson] = useState<{title: string, content: string, file: File | null, extraFiles: FileList | null}>({ 
+    title: "", 
+    content: "", 
+    file: null,
+    extraFiles: null
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Edit lesson state
   const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
-  const [editFormData, setEditFormData] = useState({ title: "", content: "" });
+  const [editFormData, setEditFormData] = useState<{title: string, content: string, file: File | null, extraFiles: FileList | null}>({ 
+    title: "", 
+    content: "", 
+    file: null,
+    extraFiles: null
+  });
 
   const fetchData = useCallback(async () => {
     try {
@@ -89,9 +101,24 @@ export default function ManageCourse() {
   const handleAddLesson = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    
+    const formData = new FormData();
+    formData.append("title", newLesson.title);
+    formData.append("content", newLesson.content);
+    if (newLesson.file) {
+      formData.append("file", newLesson.file);
+    }
+    if (newLesson.extraFiles) {
+      Array.from(newLesson.extraFiles).forEach((file) => {
+        formData.append("uploaded_files", file);
+      });
+    }
+
     try {
-      await axiosInstance.post(`/courses/${slug}/lessons/`, newLesson);
-      setNewLesson({ title: "", content: "" });
+      await axiosInstance.post(`/courses/${slug}/lessons/`, formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+      setNewLesson({ title: "", content: "", file: null, extraFiles: null });
       setShowAddForm(false);
       fetchData();
     } catch (err: any) {
@@ -113,13 +140,28 @@ export default function ManageCourse() {
 
   const handleStartEdit = (lesson: Lesson) => {
     setEditingLessonId(lesson.id);
-    setEditFormData({ title: lesson.title, content: lesson.content });
+    setEditFormData({ title: lesson.title, content: lesson.content, file: null, extraFiles: null });
   };
 
   const handleUpdateLesson = async (lessonSlug: string) => {
     setIsSubmitting(true);
+    
+    const formData = new FormData();
+    formData.append("title", editFormData.title);
+    formData.append("content", editFormData.content);
+    if (editFormData.file) {
+      formData.append("file", editFormData.file);
+    }
+    if (editFormData.extraFiles) {
+      Array.from(editFormData.extraFiles).forEach((file) => {
+        formData.append("uploaded_files", file);
+      });
+    }
+
     try {
-      await axiosInstance.patch(`/courses/${slug}/lessons/${lessonSlug}/`, editFormData);
+      await axiosInstance.patch(`/courses/${slug}/lessons/${lessonSlug}/`, formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
       setEditingLessonId(null);
       fetchData();
     } catch (err: any) {
@@ -197,6 +239,25 @@ export default function ManageCourse() {
                 placeholder="Lesson content (Markdown supported)"
               />
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Main File / Video</label>
+                <input 
+                  type="file" 
+                  onChange={(e) => setNewLesson({...newLesson, file: e.target.files?.[0] || null})}
+                  className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Additional Resources (Multiple)</label>
+                <input 
+                  type="file" 
+                  multiple
+                  onChange={(e) => setNewLesson({...newLesson, extraFiles: e.target.files})}
+                  className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                />
+              </div>
+            </div>
             <button 
               type="submit"
               disabled={isSubmitting}
@@ -237,6 +298,25 @@ export default function ManageCourse() {
                       rows={4}
                       className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
                     />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Change Main File</label>
+                        <input 
+                          type="file" 
+                          onChange={(e) => setEditFormData({...editFormData, file: e.target.files?.[0] || null})}
+                          className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Add More Resources</label>
+                        <input 
+                          type="file" 
+                          multiple
+                          onChange={(e) => setEditFormData({...editFormData, extraFiles: e.target.files})}
+                          className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                        />
+                      </div>
+                    </div>
                     <div className="flex gap-2">
                       <button 
                         onClick={() => handleUpdateLesson(lesson.slug)}
@@ -256,11 +336,18 @@ export default function ManageCourse() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                        <FileText size={20} />
+                        {lesson.file || (lesson.files && lesson.files.length > 0) ? <FileUp size={20} /> : <FileText size={20} />}
                       </div>
                       <div>
                         <h3 className="font-bold text-slate-900 dark:text-slate-100">{lesson.title}</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">Created on {new Date(lesson.created_at).toLocaleDateString()}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm text-slate-500 dark:text-slate-400">Created on {new Date(lesson.created_at).toLocaleDateString()}</p>
+                          {(lesson.file || (lesson.files && lesson.files.length > 0)) && (
+                            <span className="text-[10px] bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                              {lesson.files?.length + (lesson.file ? 1 : 0)} Files
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
