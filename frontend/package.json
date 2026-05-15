@@ -9,12 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^41.4.2",
+    "@ckeditor/ckeditor5-react": "^11.1.2",
     "axios": "^1.6.8",
     "dompurify": "^3.4.1",
+    "highlight.js": "^11.11.1",
     "lucide-react": "^0.378.0",
     "next": "14.2.3",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-quill": "^2.0.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",

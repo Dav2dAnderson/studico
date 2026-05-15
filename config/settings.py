@@ -23,6 +23,107 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+LOGS_DIR = BASE_DIR / "logs"
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    # Formatters
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} {name} {module}:{lineno} - {message}",
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        "simple": {
+            "format": "[{asctime}] {levelname} - {message}",
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        "request_fmt": {
+            "format": "[{asctime}] {levelname} {message}",
+            "style": "{",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+
+    # filters
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",     
+        },
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+    },
+
+    # handlers
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+            "filters": ["require_debug_true"],
+        },
+        # general django logs
+        "django_file": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": str(LOGS_DIR / "django.log"),
+            "when": "midnight",
+            "backupCount": 14,
+            "formatter": "verbose",
+            "encoding": "utf-8",
+        },
+        "api_file": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": str(LOGS_DIR / "api.log"),
+            "when": "midnight",
+            "backupCount": 14,
+            "formatter": "verbose",
+            "encoding": "utf-8",
+        },
+        # Errors only — never rotated away
+        "error_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": str(LOGS_DIR / "errors.log"),
+            "maxBytes": 10 * 1024 * 1024,   # 10 MB
+            "backupCount": 5,
+            "level": "ERROR",
+            "formatter": "verbose",
+            "encoding": "utf-8",
+        },
+        # Email admins on critical errors (production)
+        "mail_admins": {
+            "class": "django.utils.log.AdminEmailHandler",
+            "level": "CRITICAL",
+            "filters": ["require_debug_false"],
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        # Django internals
+        "django": {
+            "handlers": ["console", "django_file", "error_file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        # Your API app
+        "api": {
+            "handlers": ["console", "api_file", "error_file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        # Security events
+        "django.security": {
+            "handlers": ["error_file", "mail_admins"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+    },
+}
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -39,8 +140,15 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000"
 ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
 
 CORS_ALLOW_CREDENTIALS = True
+
+
+SILENCED_SYSTEM_CHECKS = ["ckeditor.W001"]
 
 
 # Application definition
@@ -93,7 +201,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'accounts.middleware.RequestLoggingMiddleware',
 ]
+
+SECURE_SSL_REDIRECT = False
 
 ROOT_URLCONF = 'config.urls'
 
@@ -120,8 +231,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT') or '5432',
     }
 }
 
@@ -144,6 +259,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 AUTH_USER_MODEL = "accounts.CustomUser"
 
 # Internationalization
@@ -162,6 +279,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

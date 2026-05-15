@@ -5,7 +5,7 @@ from .models import Application, Course, Lesson, LessonFile
 
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
-    list_display = ['user', 'content', 'created_at', 'checked', 'accepted']
+    list_display = ['user', 'content', 'created_at', 'accepted']
 
 
 @admin.register(Course)

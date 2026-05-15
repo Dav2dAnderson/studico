@@ -6,6 +6,9 @@ import { useParams, useRouter } from "next/navigation";
 import { Loader2, ArrowLeft, BookOpen, Clock, FileUp } from "lucide-react";
 import Link from "next/link";
 import DOMPurify from "dompurify";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github-dark.css'; // Premium dark theme for code snippet
+import { useEffect as useIsomorphicLayoutEffect } from 'react';
 
 interface LessonFile {
   id: number;
@@ -60,6 +63,12 @@ export default function LessonDetail() {
 
     fetchLesson();
   }, [slug, lessonSlug]);
+
+  useEffect(() => {
+    if (lesson?.content) {
+      hljs.highlightAll();
+    }
+  }, [lesson]);
 
   if (loading) {
     return (

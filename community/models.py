@@ -11,7 +11,6 @@ class Application(models.Model):
     user = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE, related_name="applications")
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    checked = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
 
     def __str__(self):
@@ -24,7 +23,7 @@ class Application(models.Model):
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(null=True, blank=True)
+    slug = models.SlugField(max_length=150, null=True, blank=True)
     user = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE, related_name="courses")
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -35,7 +34,13 @@ class Course(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            base_slug = slugify(self.name)
+            counter = 1
+            slug = base_slug
+            while Course.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         return super().save(*args, **kwargs)
 
     class Meta:
@@ -48,7 +53,7 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lessons")
     content = RichTextField()
     file = models.FileField(upload_to="lessons/", null=True, blank=True)
-    slug = models.SlugField(null=True, blank=True)
+    slug = models.SlugField(max_length=150, null=True, blank=True)
     finished = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
