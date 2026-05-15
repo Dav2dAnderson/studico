@@ -22,6 +22,11 @@ jobs:
           POSTGRES_PASSWORD: Htp627ClC
         ports:
           - 5432:5432 
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: checkout code
@@ -40,6 +45,11 @@ jobs:
       - name: run tests
         env:
           SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DB_NAME: studico_db
+          DB_USER: david
+          DB_PASSWORD: Htp627ClC
+          DB_HOST: localhost
+          DB_PORT: 5432
         run: |
           python manage.py migrate
           python manage.py test
