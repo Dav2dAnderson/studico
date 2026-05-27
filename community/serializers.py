@@ -4,16 +4,26 @@ from .models import Application, Course, Lesson, LessonFile
 
 from accounts.serializers import CustomUserSerializer
 
+
 class LessonFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = LessonFile
         fields = ['id', 'file', 'uploaded_at']
 
+
 class ApplicationSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer(read_only=True)
     class Meta:
         model = Application
-        fields = ['id', 'user', 'content', 'created_at', 'accepted', 'checked']
+        fields = ['id', 'user', 'content', 'created_at', 'accepted']
+        read_only_fields = ['accepted']
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        if request and request.user and request.user.is_authenticated:
+            if request.user.is_author:
+                raise serializers.ValidationError("You are already an author.")
+        return attrs
 
 
 class CourseSerializer(serializers.ModelSerializer):

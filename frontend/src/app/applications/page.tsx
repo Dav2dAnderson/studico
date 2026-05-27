@@ -32,6 +32,10 @@ export default function Applications() {
     }
 
     if (user) {
+      if (user.is_author) {
+        router.push("/profile");
+        return;
+      }
       fetchApplications();
     }
   }, [user, authLoading, router]);
@@ -163,16 +167,10 @@ export default function Applications() {
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-500">
                       {new Date(app.created_at).toLocaleDateString()}
                     </span>
-                    {app.checked ? (
-                      app.accepted ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400">
-                          <CheckCircle size={10} className="mr-1" /> Accepted
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400">
-                          <XCircle size={10} className="mr-1" /> Rejected
-                        </span>
-                      )
+                    {app.accepted ? (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400">
+                        <CheckCircle size={10} className="mr-1" /> Accepted
+                      </span>
                     ) : (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400">
                         Pending

@@ -24,9 +24,11 @@ export function Navbar() {
             <Link href="/courses" className="text-slate-600 dark:text-slate-300 inline-flex items-center px-1 pt-1 font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               Courses
             </Link>
-            <Link href="/applications" className="text-slate-600 dark:text-slate-300 inline-flex items-center px-1 pt-1 font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-              Apply to Teach
-            </Link>
+            {!user?.is_author && (
+              <Link href="/applications" className="text-slate-600 dark:text-slate-300 inline-flex items-center px-1 pt-1 font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                Apply to Teach
+              </Link>
+            )}
             {user?.is_author && (
               <Link href="/courses/create" className="text-indigo-600 dark:text-indigo-400 inline-flex items-center px-1 pt-1 font-semibold hover:text-indigo-700 dark:hover:text-indigo-500 transition-colors">
                 Create Course

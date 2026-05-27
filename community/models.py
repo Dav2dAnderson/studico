@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 
 from accounts.models import CustomUser
 
@@ -15,6 +16,31 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s application"
+
+    def save(self, *args, **kwargs):
+        # A user who is already an author cannot submit/create a new application
+        if self.user.is_author and self.pk is None:
+            raise ValidationError("Authors cannot submit new applications.")
+
+        if self.accepted:
+            # Check if this is a transition to accepted=True
+            is_transitioning = False
+            if self.pk is not None:
+                orig = Application.objects.get(pk=self.pk)
+                if not orig.accepted:
+                    is_transitioning = True
+            else:
+                is_transitioning = True
+
+            if is_transitioning and self.user.is_author:
+                raise ValidationError("This user is already an author, so their application cannot be accepted.")
+
+            # Promote user to author
+            if not self.user.is_author:
+                self.user.is_author = True
+                self.user.save(update_fields=['is_author'])
+
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Application"
