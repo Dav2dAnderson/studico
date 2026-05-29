@@ -10,18 +10,11 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css'; // Premium dark theme for code snippet
 import { useEffect as useIsomorphicLayoutEffect } from 'react';
 
-interface LessonFile {
-  id: number;
-  file: string;
-  uploaded_at: string;
-}
-
 interface LessonDetail {
   id: number;
   title: string;
   content: string;
   file: string | null;
-  files: LessonFile[];
   created_at: string;
   course: {
     name: string;
@@ -59,13 +52,8 @@ export default function LessonDetail() {
       try {
         const res = await axiosInstance.get(`/courses/${slug}/lessons/${lessonSlug}/`);
         setLesson(res.data);
-        const allFiles = [
-          ...(res.data.file ? [{ id: -1, file: res.data.file }] : []),
-          ...(res.data.files || [])
-        ];
-        const firstVideo = allFiles.find(f => isVideo(f.file));
-        if (firstVideo) {
-          setActiveVideoUrl(firstVideo.file);
+        if (res.data.file && isVideo(res.data.file)) {
+          setActiveVideoUrl(res.data.file);
         }
       } catch (err: any) {
         if (err.response?.status === 403) {
@@ -110,33 +98,6 @@ export default function LessonDetail() {
       </div>
     );
   }
-
-  // Combine single file and multiple files into one array for display
-  const allFiles = [
-    ...(lesson.file ? [{ id: -1, file: lesson.file }] : []),
-    ...lesson.files
-  ];
-
-  const handleDownload = async (fileId: number, fileName: string) => {
-    if (fileId === -1) return; // Main file doesn't have a secure endpoint yet
-    
-    try {
-      const response = await axiosInstance.get(
-        `/courses/${slug}/lessons/${lessonSlug}/files/${fileId}/download/`,
-        { responseType: 'blob' }
-      );
-      
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (err) {
-      alert("Failed to download file. Please make sure you are enrolled.");
-    }
-  };
 
   return (
     <div className="py-8 max-w-4xl mx-auto w-full px-4">
@@ -187,20 +148,19 @@ export default function LessonDetail() {
           />
 
           {/* Downloadable Files Section */}
-          {allFiles.length > 0 && (
+          {lesson.file && (
             <div className="space-y-4">
               <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <FileUp size={20} className="text-indigo-600" />
-                Lesson Resources ({allFiles.length})
+                Lesson Resources
               </h3>
               <div className="grid grid-cols-1 gap-4">
-                {allFiles.map((f) => {
-                  const fileName = f.file.split('/').pop() || 'resource';
-                  const isMainFile = f.id === -1;
-                  const fileIsVideo = isVideo(f.file);
+                {(() => {
+                  const fileName = lesson.file.split('/').pop() || 'resource';
+                  const fileIsVideo = isVideo(lesson.file);
 
                   return (
-                    <div key={f.id} className="p-5 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
+                    <div className="p-5 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
                       <div className="flex items-center gap-4 overflow-hidden">
                         <div className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-indigo-600 shadow-sm border border-slate-100 dark:border-slate-700 flex-shrink-0">
                           <FileUp size={20} />
@@ -219,42 +179,33 @@ export default function LessonDetail() {
                         {fileIsVideo && (
                           <button 
                             onClick={() => {
-                              setActiveVideoUrl(f.file);
+                              setActiveVideoUrl(lesson.file!);
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
                             className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold border transition-all shadow-sm text-sm ${
-                              activeVideoUrl === f.file 
+                              activeVideoUrl === lesson.file 
                                 ? 'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700' 
                                 : 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700'
                             }`}
                           >
                             <PlayCircle size={16} />
-                            {activeVideoUrl === f.file ? 'Playing' : 'Play'}
+                            {activeVideoUrl === lesson.file ? 'Playing' : 'Play'}
                           </button>
                         )}
 
-                        {isMainFile ? (
-                          <a 
-                            href={getMediaUrl(f.file)} 
-                            download
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm"
-                          >
-                            Download
-                          </a>
-                        ) : (
-                          <button 
-                            onClick={() => handleDownload(f.id, fileName)}
-                            className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm"
-                          >
-                            Download
-                          </button>
-                        )}
+                        <a 
+                          href={getMediaUrl(lesson.file)} 
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm"
+                        >
+                          Download
+                        </a>
                       </div>
                     </div>
                   );
-                })}
+                })()}
               </div>
             </div>
           )}

@@ -1,14 +1,9 @@
 from rest_framework import serializers
 
-from .models import Application, Course, Lesson, LessonFile, Classroom
+from .models import Application, Course, Lesson, Classroom
 
 from accounts.serializers import CustomUserSerializer
 
-
-class LessonFileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LessonFile
-        fields = ['id', 'file', 'uploaded_at']
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
@@ -82,27 +77,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class LessonDetailSerializer(serializers.ModelSerializer):
     course = CourseDetailSerializer(read_only=True)
-    files = LessonFileSerializer(many=True, read_only=True)
-    uploaded_files = serializers.ListField(
-        child=serializers.FileField(max_length=100000, allow_empty_file=False, use_url=False),
-        write_only=True,
-        required=False
-    )
     
     class Meta:
         model = Lesson
-        fields = ['id', 'title', 'slug', 'content', 'course', 'file', 'files', 'uploaded_files', 'created_at', 'updated_at']
-
-    def create(self, validated_data):
-        uploaded_files = validated_data.pop('uploaded_files', [])
-        lesson = Lesson.objects.create(**validated_data)
-        for file in uploaded_files:
-            LessonFile.objects.create(lesson=lesson, file=file)
-        return lesson
-
-    def update(self, instance, validated_data):
-        uploaded_files = validated_data.pop('uploaded_files', [])
-        instance = super().update(instance, validated_data)
-        for file in uploaded_files:
-            LessonFile.objects.create(lesson=instance, file=file)
-        return instance
+        fields = ['id', 'title', 'slug', 'content', 'course', 'file', 'created_at', 'updated_at']

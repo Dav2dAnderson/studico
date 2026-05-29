@@ -118,14 +118,3 @@ class Classroom(models.Model):
         verbose_name_plural = "Classrooms"
 
 
-class LessonFile(models.Model):
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="files")
-    file = models.FileField(upload_to="lessons/")
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.file.name} in {self.lesson.title}"
-    
-    class Meta:
-        verbose_name = "LessonFile"
-        verbose_name_plural = "LessonFiles"
