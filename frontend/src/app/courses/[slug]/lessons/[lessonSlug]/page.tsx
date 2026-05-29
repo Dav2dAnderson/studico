@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import { useParams, useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, BookOpen, Clock, FileUp } from "lucide-react";
+import { Loader2, ArrowLeft, BookOpen, Clock, FileUp, PlayCircle } from "lucide-react";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import hljs from 'highlight.js';
@@ -35,10 +35,21 @@ export default function LessonDetail() {
   const [lesson, setLesson] = useState<LessonDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeVideoUrl, setActiveVideoUrl] = useState<string>("");
 
   const isVideo = (url: string) => {
-    const videoExtensions = ['.mp4', '.webm', '.ogg'];
-    return videoExtensions.some(ext => url.toLowerCase().endsWith(ext));
+    if (!url) return false;
+    const cleanUrl = url.split('?')[0];
+    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv', '.m4v'];
+    return videoExtensions.some(ext => cleanUrl.toLowerCase().endsWith(ext));
+  };
+
+  const getMediaUrl = (path: string | null) => {
+    if (!path) return "";
+    if (path.startsWith("http://") || path.startsWith("https://")) {
+      return path;
+    }
+    return `http://localhost:8000${path.startsWith('/') ? '' : '/'}${path}`;
   };
 
   useEffect(() => {
@@ -48,6 +59,14 @@ export default function LessonDetail() {
       try {
         const res = await axiosInstance.get(`/courses/${slug}/lessons/${lessonSlug}/`);
         setLesson(res.data);
+        const allFiles = [
+          ...(res.data.file ? [{ id: -1, file: res.data.file }] : []),
+          ...(res.data.files || [])
+        ];
+        const firstVideo = allFiles.find(f => isVideo(f.file));
+        if (firstVideo) {
+          setActiveVideoUrl(firstVideo.file);
+        }
       } catch (err: any) {
         if (err.response?.status === 403) {
           setError("You must be enrolled in this course to view this lesson.");
@@ -98,9 +117,6 @@ export default function LessonDetail() {
     ...lesson.files
   ];
 
-  // Find the first video file to play in the player
-  const videoFile = allFiles.find(f => isVideo(f.file));
-
   const handleDownload = async (fileId: number, fileName: string) => {
     if (fileId === -1) return; // Main file doesn't have a secure endpoint yet
     
@@ -149,10 +165,11 @@ export default function LessonDetail() {
         </div>
 
         {/* Video Player Section */}
-        {videoFile && (
-          <div className="aspect-video bg-black">
+        {activeVideoUrl && (
+          <div className="aspect-video bg-black border-b border-slate-200 dark:border-slate-700">
             <video 
-              src={videoFile.file} 
+              key={activeVideoUrl}
+              src={getMediaUrl(activeVideoUrl)} 
               controls 
               className="w-full h-full"
             >
@@ -180,6 +197,7 @@ export default function LessonDetail() {
                 {allFiles.map((f) => {
                   const fileName = f.file.split('/').pop() || 'resource';
                   const isMainFile = f.id === -1;
+                  const fileIsVideo = isVideo(f.file);
 
                   return (
                     <div key={f.id} className="p-5 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
@@ -192,29 +210,48 @@ export default function LessonDetail() {
                             {fileName}
                           </p>
                           <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest font-black mt-0.5">
-                            {isVideo(f.file) ? 'Video Lesson' : 'Resource File'}
+                            {fileIsVideo ? 'Video Lesson' : 'Resource File'}
                           </p>
                         </div>
                       </div>
                       
-                      {isMainFile ? (
-                        <a 
-                          href={f.file} 
-                          download
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm"
-                        >
-                          Download
-                        </a>
-                      ) : (
-                        <button 
-                          onClick={() => handleDownload(f.id, fileName)}
-                          className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm"
-                        >
-                          Download
-                        </button>
-                      )}
+                      <div className="flex gap-2">
+                        {fileIsVideo && (
+                          <button 
+                            onClick={() => {
+                              setActiveVideoUrl(f.file);
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold border transition-all shadow-sm text-sm ${
+                              activeVideoUrl === f.file 
+                                ? 'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700' 
+                                : 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            <PlayCircle size={16} />
+                            {activeVideoUrl === f.file ? 'Playing' : 'Play'}
+                          </button>
+                        )}
+
+                        {isMainFile ? (
+                          <a 
+                            href={getMediaUrl(f.file)} 
+                            download
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm"
+                          >
+                            Download
+                          </a>
+                        ) : (
+                          <button 
+                            onClick={() => handleDownload(f.id, fileName)}
+                            className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm"
+                          >
+                            Download
+                          </button>
+                        )}
+                      </div>
                     </div>
                   );
                 })}

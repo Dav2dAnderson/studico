@@ -14,7 +14,7 @@ const CKEditorComponent: React.FC<CKEditorComponentProps> = ({ value, onChange, 
     return (
         <div className="prose-none ck-editor-wrapper">
             <CKEditor
-                editor={ClassicEditor}
+                editor={ClassicEditor as any}
                 data={value}
                 config={{
                     placeholder: placeholder || 'Type your content here...',

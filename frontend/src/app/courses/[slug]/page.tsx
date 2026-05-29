@@ -38,6 +38,7 @@ export default function CourseDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [enrolling, setEnrolling] = useState(false);
+  const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -71,6 +72,21 @@ export default function CourseDetail() {
       alert("Failed to enroll in course.");
     } finally {
       setEnrolling(false);
+    }
+  };
+
+  const handleLeave = async () => {
+    if (!confirm("Are you sure you want to leave this course?")) return;
+    setLeaving(true);
+    try {
+      await axiosInstance.post(`/courses/${slug}/leave/`);
+      // Refresh course data to update enrollment status and lessons
+      const res = await axiosInstance.get(`/courses/${slug}/`);
+      setCourse(res.data);
+    } catch (err) {
+      alert("Failed to leave course.");
+    } finally {
+      setLeaving(false);
     }
   };
 
@@ -170,16 +186,25 @@ export default function CourseDetail() {
           </div>
           
           {course.is_enrolled || course.is_author ? (
-            <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-700 flex justify-center">
+            <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={() => {
                   const lessonsSection = document.getElementById('lessons-section');
                   lessonsSection?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-600/30 hover:bg-indigo-700 hover:-translate-y-1 transition-all text-lg w-full sm:w-auto"
+                className="px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-600/30 hover:bg-indigo-700 hover:-translate-y-1 transition-all text-lg w-full sm:w-auto text-center"
               >
                 Go to Lessons
               </button>
+              {course.is_enrolled && !course.is_author && (
+                <button 
+                  onClick={handleLeave}
+                  disabled={leaving}
+                  className="px-8 py-4 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-xl font-bold hover:bg-red-100 dark:hover:bg-red-950/50 hover:-translate-y-1 transition-all text-lg w-full sm:w-auto text-center disabled:opacity-50"
+                >
+                  {leaving ? "Leaving..." : "Leave Course"}
+                </button>
+              )}
             </div>
           ) : (
             <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-700 flex justify-center">

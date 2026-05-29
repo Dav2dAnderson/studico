@@ -24,6 +24,7 @@ interface ProfileData {
   is_author: boolean;
   studying_in: Course[];
   my_courses: Course[];
+  my_certificates?: { name: string }[];
 }
 
 export default function ProfilePage() {

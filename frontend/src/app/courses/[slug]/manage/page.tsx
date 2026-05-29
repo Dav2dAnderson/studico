@@ -23,6 +23,12 @@ const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
   loading: () => <div className="h-[300px] w-full bg-slate-100 dark:bg-slate-900 animate-pulse rounded-xl" />
 });
 
+interface LessonFile {
+  id: number;
+  file: string;
+  uploaded_at: string;
+}
+
 interface Lesson {
   id: number;
   title: string;
@@ -63,6 +69,7 @@ export default function ManageCourse() {
     extraFiles: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Edit lesson state
   const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
@@ -103,6 +110,18 @@ export default function ManageCourse() {
       fetchData();
     }
   }, [user, authLoading, fetchData, router]);
+
+  const handleDeleteCourse = async () => {
+    if (!confirm("Are you sure you want to delete this course? This action cannot be undone and will delete all associated lessons and files.")) return;
+    setIsDeleting(true);
+    try {
+      await axiosInstance.delete(`/courses/${slug}/`);
+      router.push("/profile");
+    } catch (err) {
+      alert("Failed to delete course.");
+      setIsDeleting(false);
+    }
+  };
 
   const handleAddLesson = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -209,13 +228,24 @@ export default function ManageCourse() {
           </div>
         </div>
         
-        <button 
-          onClick={() => setShowAddForm(!showAddForm)}
-          className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/20 active:scale-95"
-        >
-          {showAddForm ? <X size={20} /> : <Plus size={20} />}
-          {showAddForm ? "Cancel" : "Add Lesson"}
-        </button>
+        <div className="flex gap-3">
+          <button 
+            onClick={handleDeleteCourse}
+            disabled={isDeleting}
+            className="flex items-center gap-2 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 px-5 py-2.5 rounded-xl font-semibold hover:bg-red-100 dark:hover:bg-red-950/50 transition-all active:scale-95 disabled:opacity-50"
+          >
+            <Trash2 size={20} />
+            {isDeleting ? "Deleting..." : "Delete Course"}
+          </button>
+          
+          <button 
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/20 active:scale-95"
+          >
+            {showAddForm ? <X size={20} /> : <Plus size={20} />}
+            {showAddForm ? "Cancel" : "Add Lesson"}
+          </button>
+        </div>
       </div>
 
       {/* Add Lesson Form */}

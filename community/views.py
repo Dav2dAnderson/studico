@@ -47,6 +47,15 @@ class CourseViewSet(viewsets.ModelViewSet):
         user.studying_in.add(course)
         return Response({'status': 'enrolled'}, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def leave(self, request, slug=None):
+        course = self.get_object()
+        user = request.user
+        if user.studying_in.filter(id=course.id).exists():
+            user.studying_in.remove(course)
+            return Response({'status': 'left'}, status=status.HTTP_200_OK)
+        return Response({'status': 'not enrolled'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LessonViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthorOrReadOnly]
@@ -63,10 +72,7 @@ class LessonViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return LessonSerializer
-        
-        if self.action == 'retrieve':
-            return LessonDetailSerializer
-        return LessonSerializer
+        return LessonDetailSerializer
 
     def perform_create(self, serializer):
         from django.shortcuts import get_object_or_404

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Application, Course, Lesson, LessonFile
+from .models import Application, Course, Lesson, LessonFile, Classroom
 # Register your models here.
 
 @admin.register(Application)
@@ -21,3 +21,8 @@ class LessonAdmin(admin.ModelAdmin):
 @admin.register(LessonFile)
 class LessonFileAdmin(admin.ModelAdmin):
     list_display = ['id', 'lesson', 'uploaded_at']
+
+
+@admin.register(Classroom)
+class ClassroomAdmin(admin.ModelAdmin):
+    list_display = ['name', 'course', 'created_date']

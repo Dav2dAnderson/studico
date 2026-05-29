@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Application, Course, Lesson, LessonFile
+from .models import Application, Course, Lesson, LessonFile, Classroom
 
 from accounts.serializers import CustomUserSerializer
 
@@ -9,6 +9,12 @@ class LessonFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = LessonFile
         fields = ['id', 'file', 'uploaded_at']
+
+
+class ClassroomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Classroom
+        fields = ['id', 'name', 'course', 'description', 'created_date']
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
@@ -31,6 +37,18 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ['id', 'name', 'slug', 'user']
+    
+    def create(self, validated_data):
+        course = Course.objects.create(**validated_data)
+
+        Classroom.objects.create(
+            name=f"{course.name} Classroom",
+            course=course,
+            description=f"Classroom for {course.name}",
+        )
+
+        return course
+
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
