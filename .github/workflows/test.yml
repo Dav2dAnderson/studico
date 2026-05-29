@@ -51,5 +51,6 @@ jobs:
           DB_HOST: localhost
           DB_PORT: 5432
         run: |
+          python manage.py migrate sessions
           python manage.py migrate
           python manage.py test

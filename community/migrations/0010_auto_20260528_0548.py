@@ -7,6 +7,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('community', '0009_alter_course_slug_alter_lesson_slug'),
+        ('sessions', '0001_initial'),
+        ('accounts', '0005_customuser_is_author'),
     ]
 
     operations = [
