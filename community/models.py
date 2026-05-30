@@ -52,6 +52,10 @@ class Course(models.Model):
     slug = models.SlugField(max_length=150, null=True, blank=True)
     user = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE, related_name="courses")
     description = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=20, choices=[
+        ("completed", "Completed"),
+        ("not completed", "Not Completed")
+    ], default="not completed")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
