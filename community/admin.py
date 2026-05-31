@@ -21,3 +21,25 @@ class LessonAdmin(admin.ModelAdmin):
 @admin.register(Classroom)
 class ClassroomAdmin(admin.ModelAdmin):
     list_display = ['name', 'course', 'created_date']
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change) 
+
+        obj = form.instance
+        course_students = obj.course.users.all()
+
+        for student in obj.students.all():
+            if student not in course_students:
+                obj.students.remove(student)
+                self.message_user(request, f"{student} is not enrolled in the course.", level="warning")
+    
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "students":
+            classroom_id = request.resolver_match.kwargs.get('object_id')
+            if classroom_id:
+                classroom = Classroom.objects.get(pk=classroom_id)
+                kwargs['queryset'] = classroom.course.users.all()
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+        
+

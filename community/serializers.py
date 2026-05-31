@@ -3,13 +3,30 @@ from rest_framework import serializers
 from .models import Application, Course, Lesson, Classroom
 
 from accounts.serializers import CustomUserSerializer
-
+from chatting.serializers import MessageSerializer
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classroom
-        fields = ['id', 'name', 'course', 'description', 'created_date']
+        fields = ['id', 'name', 'course', 'created_date']
+
+
+class ClassroomDetailSerializer(serializers.ModelSerializer):
+    messages = serializers.SerializerMethodField()
+    
+    def get_messages(self, obj):
+        request = self.context.get('request')
+        
+        if request and request.user.is_authenticated:
+            if obj.course.user == request.user or obj.students.filter(id=request.user.id).exists():
+                return MessageSerializer(obj.messages.all(), many=True).data
+        return []   
+    
+    class Meta:
+        model = Classroom
+        fields = ['id', 'name', 'course', 'description', 'students', 'messages', 'created_date']
+
 
 
 class ApplicationSerializer(serializers.ModelSerializer):

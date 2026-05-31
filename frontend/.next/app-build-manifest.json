@@ -21,25 +21,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/courses/page.js"
     ],
-    "/courses/[slug]/page": [
+    "/applications/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/courses/[slug]/page.js"
+      "static/chunks/app/applications/page.js"
     ],
     "/profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/profile/page.js"
     ],
-    "/courses/[slug]/manage/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/courses/[slug]/manage/page.js"
-    ],
     "/courses/create/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/courses/create/page.js"
+    ],
+    "/courses/[slug]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/courses/[slug]/page.js"
     ]
   }
 }

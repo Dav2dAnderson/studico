@@ -112,7 +112,9 @@ class Classroom(models.Model):
     name = models.CharField(max_length=100)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="classrooms")
     description = models.TextField(null=True, blank=True)
+    students = models.ManyToManyField("accounts.CustomUser", related_name="classrooms", blank=True)
     created_date = models.DateField(auto_now_add=True)
+
 
     def __str__(self):
         return f"{self.name} of {self.course.name}"

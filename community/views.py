@@ -7,8 +7,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import FileResponse
 
-from .models import Application, Course, Lesson
-from .serializers import ApplicationSerializer, CourseSerializer, CourseDetailSerializer, LessonSerializer, LessonDetailSerializer
+from .models import Application, Course, Lesson, Classroom
+from .serializers import (ApplicationSerializer, CourseSerializer, CourseDetailSerializer, 
+LessonSerializer, LessonDetailSerializer, ClassroomSerializer, ClassroomDetailSerializer)
 from .permissions import IsAuthorOrReadOnly, IsEnrolledOrAuthor, IsEnrolledToCourse
 # Create your views here.
 
@@ -81,4 +82,20 @@ class LessonViewSet(viewsets.ModelViewSet):
         serializer.save(course=course)
 
 
-        
+class ClassroomViewSet(viewsets.ModelViewSet):
+    queryset = Classroom.objects.all()
+    permission_classes = [IsAuthorOrReadOnly]
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return self.queryset.filter(students=self.request.user)
+        return self.queryset.none()
+    
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ClassroomSerializer
+        return ClassroomDetailSerializer
+
+
+

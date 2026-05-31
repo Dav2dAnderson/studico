@@ -164,6 +164,7 @@ INSTALLED_APPS = [
     # local apps
     'accounts',
     'community',
+    'chatting',
 
     # global apps
     'ckeditor',
