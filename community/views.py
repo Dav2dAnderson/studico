@@ -57,6 +57,19 @@ class CourseViewSet(viewsets.ModelViewSet):
             return Response({'status': 'left'}, status=status.HTTP_200_OK)
         return Response({'status': 'not enrolled'}, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def join_classroom(self, request, slug=None):
+        course = self.get_object()
+        user = request.user
+        # Only enrolled users or the course author can join the classroom
+        if not (user.studying_in.filter(id=course.id).exists() or course.user == user):
+            return Response({'detail': 'You must be enrolled in this course to join its classroom.'}, status=status.HTTP_403_FORBIDDEN)
+        classroom = course.classrooms.first()
+        if not classroom:
+            return Response({'detail': 'This course has no classroom yet.'}, status=status.HTTP_404_NOT_FOUND)
+        classroom.students.add(user)
+        return Response({'status': 'joined', 'classroom_id': classroom.id}, status=status.HTTP_200_OK)
+
 
 class LessonViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthorOrReadOnly]
@@ -84,18 +97,39 @@ class LessonViewSet(viewsets.ModelViewSet):
 
 class ClassroomViewSet(viewsets.ModelViewSet):
     queryset = Classroom.objects.all()
-    permission_classes = [IsAuthorOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'id'
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            return self.queryset.filter(students=self.request.user)
+            from django.db.models import Q
+            return self.queryset.filter(
+                Q(students=self.request.user) |
+                Q(course__user=self.request.user)
+            ).distinct()
         return self.queryset.none()
-    
+
     def get_serializer_class(self):
         if self.action == 'list':
             return ClassroomSerializer
         return ClassroomDetailSerializer
+
+    @action(detail=True, methods=['post'])
+    def send_message(self, request, id=None):
+        from chatting.models import Message
+        from chatting.serializers import MessageSerializer as MsgSerializer
+        classroom = self.get_object()
+        content = request.data.get('content', '').strip()
+        if not content:
+            return Response({'detail': 'Message content cannot be empty.'}, status=status.HTTP_400_BAD_REQUEST)
+        message = Message.objects.create(
+            sender=request.user,
+            classroom=classroom,
+            content=content,
+        )
+        return Response(MsgSerializer(message).data, status=status.HTTP_201_CREATED)
+
+
 
 
 

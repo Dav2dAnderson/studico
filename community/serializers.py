@@ -14,7 +14,11 @@ class ClassroomSerializer(serializers.ModelSerializer):
 
 class ClassroomDetailSerializer(serializers.ModelSerializer):
     messages = serializers.SerializerMethodField()
+    course_info = serializers.SerializerMethodField()
     
+    def get_course_info(self, obj):
+        return {'id': obj.course.id, 'name': obj.course.name, 'slug': obj.course.slug}
+
     def get_messages(self, obj):
         request = self.context.get('request')
         
@@ -25,7 +29,7 @@ class ClassroomDetailSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Classroom
-        fields = ['id', 'name', 'course', 'description', 'students', 'messages', 'created_date']
+        fields = ['id', 'name', 'course_info', 'description', 'students', 'messages', 'created_date']
 
 
 
@@ -66,12 +70,21 @@ class CourseSerializer(serializers.ModelSerializer):
 class CourseDetailSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer(read_only=True)
     is_enrolled = serializers.SerializerMethodField()
+    is_author = serializers.SerializerMethodField()
     lessons = serializers.SerializerMethodField()
+    classroom = serializers.SerializerMethodField()
+    is_in_classroom = serializers.SerializerMethodField()
 
     def get_is_enrolled(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             return obj.users.filter(id=request.user.id).exists()
+        return False
+
+    def get_is_author(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.user == request.user
         return False
 
     def get_lessons(self, obj):
@@ -81,9 +94,28 @@ class CourseDetailSerializer(serializers.ModelSerializer):
                 return LessonSerializer(obj.lessons.all(), many=True).data
         return []
 
+    def get_classroom(self, obj):
+        classroom = obj.classrooms.first()
+        if classroom:
+            return {'id': classroom.id, 'name': classroom.name}
+        return None
+
+    def get_is_in_classroom(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            classroom = obj.classrooms.first()
+            if classroom:
+                return classroom.students.filter(id=request.user.id).exists()
+        return False
+
     class Meta:
         model = Course
-        fields = ['id', 'name', 'user', 'description', 'is_enrolled', 'lessons', 'created_at', 'updated_at']
+        fields = [
+            'id', 'name', 'user', 'description',
+            'is_enrolled', 'is_author', 'lessons',
+            'classroom', 'is_in_classroom',
+            'created_at', 'updated_at',
+        ]
 
 
 class LessonSerializer(serializers.ModelSerializer):

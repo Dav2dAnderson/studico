@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { Navbar } from "@/components/Navbar";
 
-const inter = Inter({ subsets: ["latin"] });
+const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 export const metadata: Metadata = {
   title: "Studico",
@@ -35,7 +35,7 @@ export default function RootLayout({
           `,
         }} />
       </head>
-      <body className={`${inter.className} min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors duration-300`}>
+      <body className={`${plusJakartaSans.className} min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors duration-300`}>
         <Providers>
           <div className="flex flex-col min-h-screen">
             <Navbar />
@@ -51,7 +51,7 @@ export default function RootLayout({
                     Studico
                   </span>
                   <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-                    &copy; {new Date().getFullYear()} Studico. Learn anything, from anyone.
+                    &copy; {new Date().getFullYear()} Studico. Where ambition meets education.
                   </p>
                 </div>
               </div>

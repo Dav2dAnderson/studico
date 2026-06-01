@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, Info } from "lucide-react";
 import Link from "next/link";
 
 export default function CreateCoursePage() {
@@ -68,7 +68,16 @@ export default function CreateCoursePage() {
       <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden">
         <div className="p-8 sm:p-12">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Create New Course</h1>
-          <p className="text-slate-500 dark:text-slate-400 mb-8">Fill in the details below to publish your new course.</p>
+          <p className="text-slate-500 dark:text-slate-400 mb-6">Fill in the details below to publish your new course.</p>
+
+          {/* Lesson frequency notice */}
+          <div className="flex items-start gap-3 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700/50 rounded-xl px-4 py-3 mb-8">
+            <Info size={18} className="mt-0.5 shrink-0 text-indigo-500 dark:text-indigo-400" />
+            <p className="text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed">
+              <span className="font-semibold">Keep your students engaged!</span> Once your course is live, you are expected to publish{" "}
+              <span className="font-semibold">at least 2 lessons per week</span> to maintain a consistent learning pace.
+            </p>
+          </div>
 
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm font-medium mb-6">

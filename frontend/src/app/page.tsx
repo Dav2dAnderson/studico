@@ -12,7 +12,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="text-center pt-16 pb-8">
         <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight">
-          Learn anything, <span className="text-indigo-600 dark:text-indigo-400">from anyone.</span>
+          Where ambition <span className="text-indigo-600 dark:text-indigo-400">meets education.</span>
         </h1>
         <p className="mt-6 text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
           Studico is a community-driven learning platform where knowledge is shared freely. Discover new skills or create your own courses.

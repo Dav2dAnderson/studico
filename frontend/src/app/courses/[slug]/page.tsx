@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import { useParams, useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, User, Calendar, BookOpen, Check } from "lucide-react";
+import { Loader2, ArrowLeft, User, Users, Calendar, BookOpen, Check, MessageSquare } from "lucide-react";
 import Link from "next/link";
 
 interface Lesson {
@@ -14,6 +14,11 @@ interface Lesson {
   created_at: string;
 }
 
+interface Classroom {
+  id: number;
+  name: string;
+}
+
 interface CourseDetail {
   id: number;
   name: string;
@@ -22,6 +27,8 @@ interface CourseDetail {
   updated_at: string;
   is_enrolled: boolean;
   is_author: boolean;
+  is_in_classroom: boolean;
+  classroom: Classroom | null;
   lessons: Lesson[];
   user: {
     id: number;
@@ -39,6 +46,7 @@ export default function CourseDetail() {
   const [error, setError] = useState("");
   const [enrolling, setEnrolling] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const [joiningClassroom, setJoiningClassroom] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -80,13 +88,25 @@ export default function CourseDetail() {
     setLeaving(true);
     try {
       await axiosInstance.post(`/courses/${slug}/leave/`);
-      // Refresh course data to update enrollment status and lessons
       const res = await axiosInstance.get(`/courses/${slug}/`);
       setCourse(res.data);
     } catch (err) {
       alert("Failed to leave course.");
     } finally {
       setLeaving(false);
+    }
+  };
+
+  const handleJoinClassroom = async () => {
+    setJoiningClassroom(true);
+    try {
+      await axiosInstance.post(`/courses/${slug}/join_classroom/`);
+      const res = await axiosInstance.get(`/courses/${slug}/`);
+      setCourse(res.data);
+    } catch (err) {
+      alert("Failed to join classroom.");
+    } finally {
+      setJoiningClassroom(false);
     }
   };
 
@@ -218,6 +238,57 @@ export default function CourseDetail() {
             </div>
           )}
         </div>
+
+        {/* Classroom Banner - visible to enrolled users and the author */}
+        {(course.is_enrolled || course.is_author) && course.classroom && (
+          <div className="p-8 sm:p-12 border-t border-slate-100 dark:border-slate-700">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 p-6 sm:p-8">
+              {/* Decorative blur circles */}
+              <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                  <MessageSquare size={28} className="text-white" />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xl font-bold text-white mb-1">{course.classroom.name}</h3>
+                  <p className="text-purple-200 text-sm leading-relaxed">
+                    {course.is_in_classroom
+                      ? "You're a member of this classroom. Jump in and connect with fellow learners!"
+                      : "Join the course classroom to chat with your instructor and fellow students."}
+                  </p>
+                </div>
+
+                <div className="flex-shrink-0 w-full sm:w-auto">
+                  {course.is_in_classroom ? (
+                    <Link
+                      href={`/classrooms/${course.classroom.id}`}
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-purple-700 font-bold rounded-xl hover:bg-purple-50 transition-all hover:-translate-y-0.5 shadow-lg shadow-black/20 w-full sm:w-auto"
+                    >
+                      <Users size={18} />
+                      Open Classroom
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={handleJoinClassroom}
+                      disabled={joiningClassroom}
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-purple-700 font-bold rounded-xl hover:bg-purple-50 transition-all hover:-translate-y-0.5 shadow-lg shadow-black/20 disabled:opacity-60 disabled:hover:translate-y-0 w-full sm:w-auto"
+                    >
+                      {joiningClassroom ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <Users size={18} />
+                      )}
+                      {joiningClassroom ? "Joining..." : "Join Classroom"}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Lessons Section - Only visible if enrolled or author */}
         {(course.is_enrolled || course.is_author) && (
