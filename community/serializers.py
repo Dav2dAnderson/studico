@@ -54,6 +54,14 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = ['id', 'name', 'slug', 'user']
     
+    def validate(self, attrs):
+        user = self.context['request'].user
+
+        course_count = Course.objects.filter(user=user).count()
+        if course_count >= 3:
+            raise serializers.ValidationError("You can create only 3 courses.")
+        return attrs    
+
     def create(self, validated_data):
         course = Course.objects.create(**validated_data)
 
@@ -64,7 +72,6 @@ class CourseSerializer(serializers.ModelSerializer):
         )
 
         return course
-
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):

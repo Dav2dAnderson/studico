@@ -100,7 +100,7 @@ export default function ClassroomPage() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
 
   // ── Fetch classroom ────────────────────────────────────────────────────────
   const fetchClassroom = useCallback(async () => {
@@ -124,14 +124,29 @@ export default function ClassroomPage() {
     if (!authLoading && !user) router.push("/auth/login");
   }, [authLoading, user, router]);
 
-  // ── Initial load + polling ─────────────────────────────────────────────────
+  // ── Initial load + WebSocket ─────────────────────────────────────────────────
   useEffect(() => {
     fetchClassroom();
-    pollingRef.current = setInterval(fetchClassroom, 4000);
-    return () => {
-      if (pollingRef.current) clearInterval(pollingRef.current);
-    };
-  }, [fetchClassroom]);
+
+    if (id) {
+      const ws = new WebSocket(`ws://localhost:8000/ws/chat/${id}/`);
+      
+      ws.onmessage = (event) => {
+        const newMsg = JSON.parse(event.data);
+        setClassroom((prev) => {
+          if (!prev) return prev;
+          if (prev.messages.some((m) => m.id === newMsg.id)) return prev;
+          return { ...prev, messages: [...prev.messages, newMsg] };
+        });
+      };
+
+      wsRef.current = ws;
+
+      return () => {
+        ws.close();
+      };
+    }
+  }, [fetchClassroom, id]);
 
   // ── Auto-scroll to bottom ─────────────────────────────────────────────────
   useEffect(() => {
@@ -146,13 +161,20 @@ export default function ClassroomPage() {
     setSending(true);
     setSendError("");
     try {
-      const res = await axiosInstance.post(`/classrooms/${id}/send_message/`, { content });
-      // Optimistically append the new message
-      setClassroom((prev) =>
-        prev ? { ...prev, messages: [...prev.messages, res.data] } : prev
-      );
-      setInput("");
-      inputRef.current?.focus();
+      const token = localStorage.getItem("access");
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({ content, token }));
+        setInput("");
+        inputRef.current?.focus();
+      } else {
+        // Fallback to REST API if WS is not available
+        const res = await axiosInstance.post(`/classrooms/${id}/send_message/`, { content });
+        setClassroom((prev) =>
+          prev ? { ...prev, messages: [...prev.messages, res.data] } : prev
+        );
+        setInput("");
+        inputRef.current?.focus();
+      }
     } catch (err: any) {
       setSendError(err.response?.data?.detail || "Failed to send message.");
     } finally {
@@ -350,7 +372,7 @@ export default function ClassroomPage() {
             </button>
           </div>
           <p className="text-[10px] text-slate-600 mt-2 text-center">
-            Messages refresh every 4 seconds
+            Real-time chat enabled
           </p>
         </div>
       </div>

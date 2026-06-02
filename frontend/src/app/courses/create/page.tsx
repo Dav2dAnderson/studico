@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axios";
-import { Loader2, ArrowLeft, Info } from "lucide-react";
+import { Loader2, ArrowLeft, Info, LockKeyhole } from "lucide-react";
 import Link from "next/link";
 
 export default function CreateCoursePage() {
@@ -52,6 +52,62 @@ export default function CreateCoursePage() {
     return (
       <div className="flex-1 flex items-center justify-center min-h-[60vh]">
         <Loader2 className="animate-spin h-12 w-12 text-indigo-600" />
+      </div>
+    );
+  }
+
+  const courseCount = user?.my_courses?.length ?? 0;
+  const atLimit = courseCount >= 3;
+
+  if (atLimit) {
+    return (
+      <div className="py-8 max-w-2xl mx-auto w-full px-4">
+        <Link
+          href="/courses"
+          className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-8 font-medium"
+        >
+          <ArrowLeft size={20} className="mr-2" /> Back to Courses
+        </Link>
+
+        <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden">
+          {/* Red gradient header */}
+          <div className="h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-600" />
+
+          <div className="p-8 sm:p-12 flex flex-col items-center text-center">
+            <div className="w-20 h-20 rounded-full bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 flex items-center justify-center mb-6">
+              <LockKeyhole size={36} className="text-red-500 dark:text-red-400" />
+            </div>
+
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">
+              Course Limit Reached
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed mb-2">
+              You have reached the maximum of{" "}
+              <span className="font-semibold text-slate-700 dark:text-slate-200">3 courses</span>{" "}
+              allowed per instructor.
+            </p>
+            <p className="text-slate-400 dark:text-slate-500 text-sm mb-8">
+              You currently have{" "}
+              <span className="font-semibold text-red-500">{courseCount} / 3</span>{" "}
+              courses.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <Link
+                href="/profile"
+                className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-indigo-600/20 text-center"
+              >
+                Manage My Courses
+              </Link>
+              <Link
+                href="/courses"
+                className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-semibold hover:bg-slate-200 dark:hover:bg-slate-600 transition-all text-center"
+              >
+                Browse Courses
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
