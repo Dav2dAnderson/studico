@@ -1,8 +1,5 @@
 {
-  "/auth/login/page": "app/auth/login/page.js",
   "/courses/page": "app/courses/page.js",
-  "/classrooms/[id]/page": "app/classrooms/[id]/page.js",
-  "/page": "app/page.js",
-  "/courses/[slug]/page": "app/courses/[slug]/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
   "/profile/page": "app/profile/page.js"
 }

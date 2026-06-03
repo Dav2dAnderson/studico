@@ -21,16 +21,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/courses/page.js"
     ],
-    "/courses/[slug]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/courses/[slug]/page.js"
-    ],
-    "/classrooms/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/classrooms/[id]/page.js"
-    ],
     "/profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
