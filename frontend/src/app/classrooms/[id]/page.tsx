@@ -129,7 +129,8 @@ export default function ClassroomPage() {
     fetchClassroom();
 
     if (id) {
-      const ws = new WebSocket(`ws://localhost:8000/ws/chat/${id}/`);
+      const wsBaseUrl = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000";
+      const ws = new WebSocket(`${wsBaseUrl}/ws/chat/${id}/`);
       
       ws.onmessage = (event) => {
         const newMsg = JSON.parse(event.data);
