@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "../../lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import { Loader2, FileText, CheckCircle, XCircle, Send } from "lucide-react";
 import Link from "next/link";
