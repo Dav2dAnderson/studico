@@ -139,12 +139,15 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "studico.onrender.com"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://studico-six.vercel.app"
+    "https://studico-six.vercel.app",
+    "https://studico.onrender.com",
 ]
+
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://studico-six.vercel.app"
+    "https://studico-six.vercel.app",
+    "https://studico.onrender.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
