@@ -1,1 +1,11 @@
-{}
+{
+  "app/courses/[slug]/manage/page.tsx -> @/components/RichTextEditor": {
+    "id": 92037,
+    "files": [
+      "static/css/8aee48eb52f4c731.css",
+      "static/chunks/8012d7e2.673fa7631c8d74ea.js",
+      "static/chunks/397.203bb92aa52f2a9f.js",
+      "static/chunks/37.17e091d2c35b5304.js"
+    ]
+  }
+}
