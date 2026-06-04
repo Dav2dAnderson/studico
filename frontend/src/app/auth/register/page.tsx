@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
@@ -31,7 +31,7 @@ export default function Register() {
     setIsLoading(true);
 
     try {
-      await axios.post("http://localhost:8000/api/user_control/register/", formData);
+      await axiosInstance.post("/user_control/register/", formData);
       // Automatically redirect to login page after successful registration
       router.push("/auth/login");
     } catch (err: any) {

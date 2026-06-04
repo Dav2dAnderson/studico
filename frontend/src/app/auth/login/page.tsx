@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -22,7 +22,7 @@ export default function Login() {
 
     try {
       // Login endpoint might use axios directly to not trigger interceptors unnecessarily
-      const res = await axios.post("http://localhost:8000/api/token/", {
+      const res = await axiosInstance.post("/token/", {
         username,
         password,
       });

@@ -42,7 +42,9 @@ export default function LessonDetail() {
     if (path.startsWith("http://") || path.startsWith("https://")) {
       return path;
     }
-    return `http://localhost:8000${path.startsWith('/') ? '' : '/'}${path}`;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://studico.onrender.com/api/';
+    const baseUrl = apiUrl.replace(/\/api\/$/, '');
+    return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
   };
 
   useEffect(() => {
