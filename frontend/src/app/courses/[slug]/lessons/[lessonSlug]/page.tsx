@@ -116,7 +116,7 @@ export default function LessonDetail() {
         </div>
       </div>
 
-      <article className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden">
+      <article className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl">
         <div className="p-8 sm:p-12 border-b border-slate-100 dark:border-slate-700 bg-slate-50/30 dark:bg-slate-900/30">
           <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm uppercase tracking-wider mb-2">
             <BookOpen size={16} />
@@ -143,7 +143,8 @@ export default function LessonDetail() {
 
         <div className="p-8 sm:p-12">
           <div 
-            className="prose prose-lg prose-indigo dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 mb-12"
+            className="prose prose-lg prose-indigo dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 mb-12 break-words overflow-wrap-anywhere"
+            style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}
             dangerouslySetInnerHTML={{ 
               __html: DOMPurify.sanitize(lesson.content || '<p class="italic text-slate-400">This lesson has no content yet.</p>') 
             }}
