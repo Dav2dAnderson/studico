@@ -13,12 +13,13 @@ class Me(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        serializer = UserShortSerializer(request.user)
+        serializer = UserShortSerializer(request.user, context={'request': request})
         return Response(serializer.data)
 
     def patch(self, request):
-        serializer = CustomUserSerializer(request.user, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        serializer = CustomUserSerializer(request.user, data=request.data, partial=True, context={'request': request})
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response(serializer.data)
 
@@ -37,7 +38,8 @@ class UserRegistrationView(APIView):
 
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         user = serializer.save()
 
         return Response(
@@ -54,6 +56,7 @@ class UserLogOutView(APIView):
 
     def post(self, request):
         serializer = UserLogOutSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response({"detail": "User has logged out"}, status=status.HTTP_205_RESET_CONTENT)
