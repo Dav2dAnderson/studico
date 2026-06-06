@@ -35,12 +35,15 @@ export default function Register() {
       // Automatically redirect to login page after successful registration
       router.push("/auth/login");
     } catch (err: any) {
-      if (err.response?.data) {
-        // Handle specific field errors
+      if (err.rateLimitMessage) {
+        // Rate limited (HTTP 429)
+        setError(err.rateLimitMessage);
+      } else if (err.response?.data) {
+        // Handle specific field errors from the serializer
         const errorData = err.response.data;
-        const messages = Object.keys(errorData)
-          .map((key) => `${key}: ${errorData[key]}`)
-          .join(" | ");
+        const messages = Object.values(errorData)
+          .flat()
+          .join(" ");
         setError(messages || "Registration failed. Please try again.");
       } else {
         setError("Registration failed. Please check your connection.");

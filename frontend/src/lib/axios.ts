@@ -20,11 +20,21 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle 401 errors and token refresh
+// Response interceptor to handle 401 / 429 errors and token refresh
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
+    // Rate limit hit — attach a friendly message so every page can display it
+    if (error.response?.status === 429) {
+      const retryAfter = error.response.headers?.['retry-after'];
+      const waitMsg = retryAfter
+        ? ` Please wait ${retryAfter} seconds before trying again.`
+        : ' Please wait a moment before trying again.';
+      error.rateLimitMessage = `Too many requests.${waitMsg}`;
+      return Promise.reject(error);
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -36,7 +46,7 @@ axiosInstance.interceptors.response.use(
               refresh: refreshToken,
             });
             localStorage.setItem('access', res.data.access);
-            
+
             // Update the original request's authorization header
             if (originalRequest.headers) {
               originalRequest.headers.set('Authorization', `Bearer ${res.data.access}`);

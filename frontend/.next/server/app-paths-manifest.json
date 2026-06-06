@@ -1,14 +1,5 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/applications/page": "app/applications/page.js",
-  "/auth/login/page": "app/auth/login/page.js",
-  "/auth/register/page": "app/auth/register/page.js",
-  "/classrooms/[id]/page": "app/classrooms/[id]/page.js",
-  "/courses/[slug]/lessons/[lessonSlug]/page": "app/courses/[slug]/lessons/[lessonSlug]/page.js",
-  "/courses/[slug]/page": "app/courses/[slug]/page.js",
-  "/courses/create/page": "app/courses/create/page.js",
-  "/courses/[slug]/manage/page": "app/courses/[slug]/manage/page.js",
-  "/courses/page": "app/courses/page.js",
   "/page": "app/page.js",
-  "/profile/page": "app/profile/page.js"
+  "/auth/register/page": "app/auth/register/page.js",
+  "/auth/login/page": "app/auth/login/page.js"
 }

@@ -30,11 +30,16 @@ export default function Login() {
       await login(res.data.access, res.data.refresh);
       router.push("/courses");
     } catch (err: any) {
-      setError(
-        err.response?.data?.detail || 
-        (err.response ? JSON.stringify(err.response.data) : err.message) ||
-        "Failed to login. Please check your credentials."
-      );
+      if (err.rateLimitMessage) {
+        // Rate limited (HTTP 429)
+        setError(err.rateLimitMessage);
+      } else {
+        setError(
+          err.response?.data?.detail ||
+          (err.response ? JSON.stringify(err.response.data) : err.message) ||
+          "Failed to login. Please check your credentials."
+        );
+      }
     } finally {
       setIsLoading(false);
     }
