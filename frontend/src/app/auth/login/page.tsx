@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axiosInstance from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -12,16 +12,19 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const isSubmitting = useRef(false); // synchronous guard against double-submit
   const { login } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Synchronous guard: prevents double-submission before React re-renders
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
     setError("");
     setIsLoading(true);
 
     try {
-      // Login endpoint might use axios directly to not trigger interceptors unnecessarily
       const res = await axiosInstance.post("/token/", {
         username,
         password,
@@ -31,7 +34,6 @@ export default function Login() {
       router.push("/courses");
     } catch (err: any) {
       if (err.rateLimitMessage) {
-        // Rate limited (HTTP 429)
         setError(err.rateLimitMessage);
       } else {
         setError(
@@ -41,6 +43,7 @@ export default function Login() {
         );
       }
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };

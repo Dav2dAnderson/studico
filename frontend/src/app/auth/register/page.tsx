@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -19,6 +19,7 @@ export default function Register() {
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const isSubmitting = useRef(false); // synchronous guard against double-submit
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,12 +28,14 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Synchronous guard: prevents double-submission before React re-renders
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
     setError("");
     setIsLoading(true);
 
     try {
       await axiosInstance.post("/user_control/register/", formData);
-      // Automatically redirect to login page after successful registration
       router.push("/auth/login");
     } catch (err: any) {
       if (err.rateLimitMessage) {
@@ -49,6 +52,7 @@ export default function Register() {
         setError("Registration failed. Please check your connection.");
       }
     } finally {
+      isSubmitting.current = false;
       setIsLoading(false);
     }
   };
