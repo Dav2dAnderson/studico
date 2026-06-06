@@ -3,11 +3,16 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
 from .serializers import CustomUserSerializer, UserRegistrationSerializer, UserShortSerializer, UserLogOutSerializer, CertificateSerializer
 from .models import CustomUser, Certificate
 
 # Create your views here.
+
+class RegisterThrottle(AnonRateThrottle):
+    scope = "register"
+
 
 class Me(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -35,6 +40,7 @@ class CertificateListView(APIView):
 
 class UserRegistrationView(APIView):
     permission_classes = [permissions.AllowAny]
+    throttle_classes = [RegisterThrottle]
 
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
