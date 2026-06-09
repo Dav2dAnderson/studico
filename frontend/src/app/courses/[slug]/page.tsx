@@ -112,7 +112,7 @@ export default function CourseDetail() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="animate-spin h-12 w-12 text-indigo-600" />
       </div>
     );
@@ -120,17 +120,17 @@ export default function CourseDetail() {
 
   if (error || !course) {
     return (
-      <div className="py-12">
+      <div className="w-full max-w-4xl py-12">
         <button 
           onClick={() => router.back()} 
-          className="flex items-center text-slate-500 hover:text-indigo-600 transition-colors mb-8 font-medium"
+          className="mb-8 flex items-center font-medium text-slate-500 transition-colors hover:text-indigo-600"
         >
           <ArrowLeft size={20} className="mr-2" /> Back
         </button>
-        <div className="bg-red-50 border border-red-200 text-red-600 px-6 py-8 rounded-3xl text-center max-w-lg mx-auto">
+        <div className="surface-panel max-w-lg px-6 py-8 text-center text-red-600">
           <h3 className="font-bold text-xl mb-2">Oops!</h3>
           <p>{error || "Course not found"}</p>
-          <Link href="/courses" className="mt-6 inline-block bg-white text-red-600 px-6 py-2 rounded-xl font-semibold border border-red-200 hover:bg-red-50 transition">
+          <Link href="/courses" className="mt-6 inline-block rounded-2xl border border-red-200 bg-white px-6 py-2 font-semibold text-red-600 transition hover:bg-red-50">
             Browse All Courses
           </Link>
         </div>
@@ -145,43 +145,43 @@ export default function CourseDetail() {
   });
 
   return (
-    <div className="py-8 max-w-4xl mx-auto w-full">
+    <div className="w-full max-w-4xl">
       <Link 
         href="/courses" 
-        className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-8 font-medium"
+        className="mb-8 inline-flex items-center font-medium text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
       >
         <ArrowLeft size={20} className="mr-2" /> Back to Courses
       </Link>
 
-      <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden">
+      <div className="surface-panel overflow-hidden">
         {/* Header Hero */}
-        <div className="h-64 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 p-8 sm:p-12 flex flex-col justify-end relative">
+        <div className="relative flex h-64 flex-col justify-end overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 p-8 sm:p-12">
           <div className="absolute top-0 right-0 p-8 opacity-20">
             <BookOpen size={120} className="text-white" />
           </div>
           <div className="relative z-10">
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 drop-shadow-md">
+            <h1 className="mb-4 text-3xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-5xl">
               {course.name}
             </h1>
-            <div className="flex flex-wrap items-center text-indigo-100 gap-4 sm:gap-8 font-medium">
-              <div className="flex items-center bg-black/20 px-4 py-2 rounded-full backdrop-blur-sm">
+            <div className="flex flex-wrap items-center gap-4 font-medium text-indigo-100 sm:gap-8">
+              <div className="flex items-center rounded-full bg-black/20 px-4 py-2 backdrop-blur-sm">
                 <User size={18} className="mr-2" />
                 {course.user?.first_name && course.user?.last_name 
                   ? `${course.user.first_name} ${course.user.last_name}`
                   : course.user?.username || 'Unknown'}
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm">
                 <Calendar size={18} className="mr-2" />
                 Published {formattedDate}
               </div>
               {course.is_enrolled && (
-                <div className="flex items-center bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded-full backdrop-blur-sm border border-emerald-500/30">
+                <div className="flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/20 px-4 py-2 text-emerald-300 backdrop-blur-sm">
                   <Check size={18} className="mr-2" />
                   Enrolled
                 </div>
               )}
               {course.is_author && (
-                <div className="flex items-center bg-amber-500/20 text-amber-300 px-4 py-2 rounded-full backdrop-blur-sm border border-amber-500/30">
+                <div className="flex items-center rounded-full border border-amber-500/30 bg-amber-500/20 px-4 py-2 text-amber-300 backdrop-blur-sm">
                   <User size={18} className="mr-2" />
                   Instructor
                 </div>
@@ -191,8 +191,8 @@ export default function CourseDetail() {
         </div>
 
         {/* Content */}
-        <div className="p-8 sm:p-12 bg-white dark:bg-slate-800">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">About this course</h2>
+        <div className="bg-white/80 px-8 py-12 dark:bg-slate-950/55 sm:px-12">
+          <h2 className="mb-6 text-2xl font-bold text-slate-950 dark:text-slate-100">About this course</h2>
           <div className="prose prose-lg prose-indigo max-w-none text-slate-600 dark:text-slate-300">
             {course.description ? (
               <p className="whitespace-pre-line leading-relaxed">
@@ -206,13 +206,13 @@ export default function CourseDetail() {
           </div>
           
           {course.is_enrolled || course.is_author ? (
-            <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="mt-12 flex flex-col justify-center gap-4 border-t border-slate-100 pt-8 dark:border-slate-700 sm:flex-row">
               <button 
                 onClick={() => {
                   const lessonsSection = document.getElementById('lessons-section');
                   lessonsSection?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-600/30 hover:bg-indigo-700 hover:-translate-y-1 transition-all text-lg w-full sm:w-auto text-center"
+                className="w-full rounded-2xl bg-indigo-600 px-8 py-4 text-center text-lg font-bold text-white shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-1 hover:bg-indigo-700 sm:w-auto"
               >
                 Go to Lessons
               </button>
@@ -220,18 +220,18 @@ export default function CourseDetail() {
                 <button 
                   onClick={handleLeave}
                   disabled={leaving}
-                  className="px-8 py-4 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-xl font-bold hover:bg-red-100 dark:hover:bg-red-950/50 hover:-translate-y-1 transition-all text-lg w-full sm:w-auto text-center disabled:opacity-50"
+                  className="w-full rounded-2xl border border-red-200 bg-red-50 px-8 py-4 text-center text-lg font-bold text-red-600 transition-all hover:-translate-y-1 hover:bg-red-100 disabled:opacity-50 dark:border-red-800 dark:bg-red-950/20 dark:text-red-400 dark:hover:bg-red-950/50 sm:w-auto"
                 >
                   {leaving ? "Leaving..." : "Leave Course"}
                 </button>
               )}
             </div>
           ) : (
-            <div className="mt-12 pt-8 border-t border-slate-100 dark:border-slate-700 flex justify-center">
+            <div className="mt-12 flex justify-center border-t border-slate-100 pt-8 dark:border-slate-700">
               <button 
                 onClick={handleEnroll}
                 disabled={enrolling}
-                className="px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-600/30 hover:bg-indigo-700 hover:-translate-y-1 transition-all text-lg w-full sm:w-auto disabled:opacity-50"
+                className="w-full rounded-2xl bg-indigo-600 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-1 hover:bg-indigo-700 disabled:opacity-50 sm:w-auto"
               >
                 {enrolling ? "Enrolling..." : "Enroll in Course"}
               </button>
@@ -241,8 +241,8 @@ export default function CourseDetail() {
 
         {/* Classroom Banner - visible to enrolled users and the author */}
         {(course.is_enrolled || course.is_author) && course.classroom && (
-          <div className="p-8 sm:p-12 border-t border-slate-100 dark:border-slate-700">
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 p-6 sm:p-8">
+          <div className="border-t border-slate-100 px-8 py-12 dark:border-slate-700 sm:px-12">
+            <div className="relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 p-6 sm:p-8">
               {/* Decorative blur circles */}
               <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
               <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />

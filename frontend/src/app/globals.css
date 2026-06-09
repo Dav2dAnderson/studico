@@ -2,48 +2,281 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
 @layer base {
   :root {
-    --background: #f8fafc;
+    --background: #f4f7fb;
     --foreground: #0f172a;
     --card: #ffffff;
     --card-foreground: #0f172a;
-    --border: #e2e8f0;
+    --border: #dbe4f0;
     --primary: #4f46e5;
     --primary-foreground: #ffffff;
     --muted: #64748b;
     --muted-foreground: #94a3b8;
+    --surface: rgba(255, 255, 255, 0.72);
+    --surface-border: rgba(148, 163, 184, 0.18);
+    --radius: 1rem;
   }
 
   .dark {
-    --background: #0f172a;
-    --foreground: #f8fafc;
-    --card: #1e293b;
-    --card-foreground: #f8fafc;
-    --border: #334155;
+    --background: #060b15;
+    --foreground: #f1f5f9;
+    --card: #0f172a;
+    --card-foreground: #f1f5f9;
+    --border: #1c2740;
     --primary: #6366f1;
     --primary-foreground: #ffffff;
     --muted: #94a3b8;
-    --muted-foreground: #64748b;
+    --muted-foreground: #475569;
+    --surface: rgba(15, 23, 42, 0.72);
+    --surface-border: rgba(99, 102, 241, 0.14);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background:
+      radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), transparent 34%),
+      radial-gradient(circle at top right, rgba(168, 85, 247, 0.14), transparent 28%),
+      linear-gradient(180deg, #f8fafc 0%, #eef3f9 100%);
+  }
+
+  body {
+    background-color: var(--background);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.08), transparent 26%),
+      radial-gradient(circle at 85% 10%, rgba(168, 85, 247, 0.07), transparent 22%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(244, 247, 251, 1));
+    color: var(--foreground);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .dark body {
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.16), transparent 24%),
+      radial-gradient(circle at 85% 10%, rgba(168, 85, 247, 0.11), transparent 20%),
+      linear-gradient(180deg, rgba(6, 11, 21, 0.86), rgba(6, 11, 21, 1));
+  }
+
+  /* Premium scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #6366f1;
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4f46e5;
+  }
+
+  ::selection {
+    background: rgba(99, 102, 241, 0.25);
+    color: #4338ca;
   }
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* ============================================================
+   KEYFRAME ANIMATIONS
+   ============================================================ */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-18px) rotate(1deg); }
+  66%       { transform: translateY(-8px) rotate(-1deg); }
 }
 
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-12px) rotate(-1deg); }
+  66%       { transform: translateY(-22px) rotate(1deg); }
+}
+
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
+  70%  { transform: scale(1);    box-shadow: 0 0 0 12px rgba(99, 102, 241, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes blob {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  50%       { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .text-balance { text-wrap: balance; }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent;
+    background-size: 200% 200%;
+    animation: gradient-shift 5s ease infinite;
   }
+
+  .gradient-text-static {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent;
+  }
+
+  .page-shell {
+    @apply relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 flex flex-1 flex-col;
+  }
+
+  .surface-panel {
+    @apply rounded-[2rem] border border-white/60 dark:border-slate-800/70 bg-white/80 dark:bg-slate-950/65 shadow-[0_20px_60px_-30px_rgba(15,23,42,0.45)] backdrop-blur-2xl;
+  }
+
+  .surface-panel-soft {
+    @apply rounded-[2rem] border border-slate-200/70 dark:border-slate-800/80 bg-white/70 dark:bg-slate-950/55 shadow-lg shadow-slate-900/5 dark:shadow-black/20 backdrop-blur-xl;
+  }
+
+  .page-eyebrow {
+    @apply text-xs font-black uppercase tracking-[0.28em] text-indigo-600 dark:text-indigo-400;
+  }
+
+  .page-title {
+    @apply text-4xl sm:text-5xl font-black tracking-tight text-slate-950 dark:text-white;
+  }
+
+  .page-subtitle {
+    @apply text-base sm:text-lg leading-relaxed text-slate-500 dark:text-slate-400;
+  }
+
+  /* Animation utilities */
+  .animate-float         { animation: float 6s ease-in-out infinite; }
+  .animate-float-delayed { animation: float-delayed 8s ease-in-out infinite; }
+  .animate-fade-up       { animation: fade-up 0.6s ease forwards; }
+  .animate-scale-in      { animation: scale-in 0.4s ease forwards; }
+  .animate-blob          { animation: blob 8s ease-in-out infinite; }
+  .animate-spin-slow     { animation: spin-slow 20s linear infinite; }
+
+  /* Shimmer skeleton */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+    background: #e2e8f0;
+  }
+  .dark .shimmer { background: #1e293b; }
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Glass morphism */
+  .glass {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .dark .glass {
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+  }
+
+  /* Glow effects */
+  .glow-indigo { box-shadow: 0 0 40px rgba(99, 102, 241, 0.35); }
+  .glow-purple { box-shadow: 0 0 40px rgba(168, 85, 247, 0.35); }
+  .hover-glow:hover { box-shadow: 0 0 30px rgba(99, 102, 241, 0.4); }
+
+  /* Card styles */
+  .card-premium {
+    @apply bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card-premium:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.12);
+  }
+  .dark .card-premium:hover {
+    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.08);
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold text-white;
+    @apply bg-indigo-600 hover:bg-indigo-700 transition-all duration-200;
+    @apply shadow-lg shadow-indigo-600/25 hover:-translate-y-0.5 active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold;
+    @apply bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200;
+    @apply border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600;
+    @apply transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98];
+  }
+
+  /* Input base */
+  .input-base {
+    @apply w-full px-4 py-3 rounded-2xl border border-slate-200/80 dark:border-slate-700/80;
+    @apply bg-white/80 dark:bg-slate-950/60 text-slate-900 dark:text-slate-100;
+    @apply placeholder-slate-400 dark:placeholder-slate-600;
+    @apply focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500;
+    @apply transition-all duration-200 shadow-sm shadow-slate-900/5;
+  }
+
+  /* Staggered animation delays */
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+  .delay-400 { animation-delay: 0.4s; }
+  .delay-500 { animation-delay: 0.5s; }
 }
 
-/* Premium Code Block Styling */
+/* ============================================================
+   PROSE / CODE BLOCK STYLING
+   ============================================================ */
 .prose pre {
   background-color: #0d1117 !important;
-  border-radius: 1.25rem !important;
+  border-radius: 1.5rem !important;
   padding: 2rem 1.5rem 1.5rem !important;
   margin: 2rem 0 !important;
   border: 1px solid #30363d !important;
@@ -52,7 +285,7 @@ body {
   overflow: hidden;
 }
 
-/* Terminal Window Header Dots */
+/* Terminal window dots */
 .prose pre::before {
   content: "";
   position: absolute;
@@ -69,8 +302,8 @@ body {
 .prose code {
   font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace !important;
   font-size: 0.875em !important;
-  color: #ef4444 !important; /* Standout color for inline code */
-  background-color: #fee2e2 !important; /* Soft red background */
+  color: #ef4444 !important;
+  background-color: #fee2e2 !important;
   padding: 0.2rem 0.5rem !important;
   border-radius: 0.5rem !important;
   font-weight: 700 !important;
@@ -92,7 +325,6 @@ body {
   line-height: 1.6 !important;
 }
 
-/* Remove default backticks from Tailwind Typography */
 .prose code::before,
 .prose code::after {
   content: "" !important;

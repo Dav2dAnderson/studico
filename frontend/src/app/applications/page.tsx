@@ -77,7 +77,7 @@ export default function Applications() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="animate-spin h-12 w-12 text-indigo-600" />
       </div>
     );
@@ -86,31 +86,31 @@ export default function Applications() {
   if (!user) return null; // Router will redirect
 
   return (
-    <div className="py-8 max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-3">
       {/* Submit Form Area */}
       <div className="lg:col-span-2 space-y-8">
         <div>
-          <h1 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight mb-2">
+          <h1 className="page-title mb-2">
             Apply to Teach
           </h1>
-          <p className="text-lg text-slate-600 dark:text-slate-400">
+          <p className="page-subtitle max-w-2xl">
             Share your expertise with the Studico community. Submit your application below to become a creator.
           </p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-xl shadow-indigo-100/50 dark:shadow-none border border-slate-100 dark:border-slate-700">
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center">
+        <div className="surface-panel p-8">
+          <h2 className="mb-6 flex items-center text-2xl font-bold text-slate-800 dark:text-slate-100">
             <FileText className="mr-3 text-indigo-500" />
             New Application
           </h2>
           
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm font-medium mb-6">
+            <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400">
               {error}
             </div>
           )}
           {success && (
-            <div className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 px-4 py-3 rounded-xl text-sm font-medium mb-6 flex items-center">
+            <div className="mb-6 flex items-center rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-600 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
               <CheckCircle size={18} className="mr-2" />
               {success}
             </div>
@@ -126,7 +126,7 @@ export default function Applications() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={6}
-                className="appearance-none block w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-base bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-950 resize-none"
+                className="input-base min-h-40 resize-none"
                 placeholder="I have 5 years of experience in..."
               />
             </div>
@@ -134,7 +134,7 @@ export default function Applications() {
             <button
               type="submit"
               disabled={submitting || !content.trim()}
-              className="w-full sm:w-auto inline-flex justify-center items-center py-3 px-8 border border-transparent rounded-xl shadow-md shadow-indigo-600/20 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:opacity-70 disabled:hover:translate-y-0 disabled:cursor-not-allowed active:scale-95"
+              className="inline-flex w-full items-center justify-center rounded-2xl bg-indigo-600 px-8 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-600/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 active:scale-95 sm:w-auto"
             >
               {submitting ? (
                 <Loader2 className="animate-spin h-5 w-5 mr-2" />
@@ -149,20 +149,20 @@ export default function Applications() {
 
       {/* Past Applications Area */}
       <div className="lg:col-span-1">
-        <div className="bg-slate-100 dark:bg-slate-800/50 rounded-3xl p-6 h-full border border-slate-200 dark:border-slate-700">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-6">Your History</h3>
+        <div className="surface-panel-soft h-full p-6">
+          <h3 className="mb-6 text-xl font-bold text-slate-900 dark:text-slate-100">Your History</h3>
           
           {applications.length === 0 ? (
-            <div className="text-center py-10">
-              <div className="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400 dark:text-slate-500">
+            <div className="py-10 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500">
                 <FileText size={24} />
               </div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">You haven't submitted any applications yet.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">You haven't submitted any applications yet.</p>
             </div>
           ) : (
             <div className="space-y-4">
               {applications.map((app) => (
-                <div key={app.id} className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow">
+                <div key={app.id} className="rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-sm transition-shadow hover:shadow-md dark:border-slate-800 dark:bg-slate-950/55">
                   <div className="flex justify-between items-start mb-3">
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-500">
                       {new Date(app.created_at).toLocaleDateString()}

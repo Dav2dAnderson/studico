@@ -3,12 +3,17 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { Navbar } from "@/components/Navbar";
+import Link from "next/link";
 
-const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 export const metadata: Metadata = {
-  title: "Studico",
-  description: "An online learning platform created by users.",
+  title: "Studico — Where Ambition Meets Education",
+  description:
+    "Studico is a community-driven learning platform where knowledge is shared freely. Discover new skills or create your own courses.",
 };
 
 export default function RootLayout({
@@ -19,8 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{
-          __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
             (function() {
               try {
                 var theme = localStorage.getItem('theme');
@@ -33,26 +39,97 @@ export default function RootLayout({
               } catch (e) {}
             })();
           `,
-        }} />
+          }}
+        />
       </head>
-      <body className={`${plusJakartaSans.className} min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors duration-300`}>
+      <body
+        className={`${plusJakartaSans.className} min-h-screen text-slate-900 dark:text-slate-50 transition-colors duration-300`}
+      >
         <Providers>
-          <div className="flex flex-col min-h-screen">
+          <div className="relative flex min-h-screen flex-col overflow-hidden">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 overflow-hidden"
+            >
+              <div className="absolute -top-32 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-500/15" />
+              <div className="absolute top-[18rem] right-[-8rem] h-[24rem] w-[24rem] rounded-full bg-purple-500/10 blur-3xl dark:bg-purple-500/10" />
+              <div className="absolute bottom-0 left-[-6rem] h-[22rem] w-[22rem] rounded-full bg-sky-500/10 blur-3xl dark:bg-sky-500/10" />
+              <div
+                className="absolute inset-0 opacity-[0.03] dark:opacity-[0.06]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(99,102,241,0.55) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.55) 1px, transparent 1px)",
+                  backgroundSize: "56px 56px",
+                }}
+              />
+            </div>
             <Navbar />
-            
-            <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col">
-              {children}
+
+            <main className="relative z-10 flex-1">
+              <div className="page-shell">
+                {children}
+              </div>
             </main>
-            
-            <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-auto transition-colors">
-              <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col items-center justify-center space-y-4">
-                  <span className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent opacity-80">
-                    Studico
-                  </span>
-                  <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-                    &copy; {new Date().getFullYear()} Studico. Where ambition meets education.
-                  </p>
+
+            <footer className="relative z-10 mt-auto border-t border-slate-200/70 bg-white/75 backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-950/55">
+              <div className="page-shell py-10">
+                <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+                  <div className="max-w-md space-y-3">
+                    <Link
+                      href="/"
+                      className="inline-flex text-2xl font-black gradient-text-static"
+                    >
+                      Studico
+                    </Link>
+                    <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                      A community-driven learning platform where knowledge is
+                      shared freely and ambition thrives.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <p className="page-eyebrow text-[10px]">Platform</p>
+                      <div className="flex flex-wrap gap-3">
+                        {[
+                          { label: "Browse Courses", href: "/courses" },
+                          { label: "Apply to Teach", href: "/applications" },
+                          { label: "My Profile", href: "/profile" },
+                        ].map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            className="rounded-full border border-slate-200/70 bg-white/70 px-4 py-2 text-sm font-medium text-slate-600 transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300 dark:hover:border-indigo-700 dark:hover:text-indigo-300"
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="page-eyebrow text-[10px]">Account</p>
+                      <div className="flex flex-wrap gap-3">
+                        {[
+                          { label: "Sign In", href: "/auth/login" },
+                          { label: "Create Account", href: "/auth/register" },
+                        ].map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            className="rounded-full border border-slate-200/70 bg-white/70 px-4 py-2 text-sm font-medium text-slate-600 transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300 dark:hover:border-indigo-700 dark:hover:text-indigo-300"
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-10 flex flex-col gap-2 border-t border-slate-200/70 pt-6 text-xs text-slate-400 dark:border-slate-800 dark:text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+                  <p>© {new Date().getFullYear()} Studico. All rights reserved.</p>
+                  <p>Where ambition meets education.</p>
                 </div>
               </div>
             </footer>

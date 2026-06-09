@@ -50,7 +50,7 @@ export default function CreateCoursePage() {
 
   if (authLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="animate-spin h-12 w-12 text-indigo-600" />
       </div>
     );
@@ -61,20 +61,20 @@ export default function CreateCoursePage() {
 
   if (atLimit) {
     return (
-      <div className="py-8 max-w-2xl mx-auto w-full px-4">
+      <div className="w-full max-w-2xl">
         <Link
           href="/courses"
-          className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-8 font-medium"
+          className="mb-8 inline-flex items-center font-medium text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
         >
           <ArrowLeft size={20} className="mr-2" /> Back to Courses
         </Link>
 
-        <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden">
+        <div className="surface-panel overflow-hidden">
           {/* Red gradient header */}
           <div className="h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-600" />
 
-          <div className="p-8 sm:p-12 flex flex-col items-center text-center">
-            <div className="w-20 h-20 rounded-full bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 flex items-center justify-center mb-6">
+          <div className="flex flex-col items-center px-8 py-12 text-center sm:px-12">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full border-2 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20">
               <LockKeyhole size={36} className="text-red-500 dark:text-red-400" />
             </div>
 
@@ -95,13 +95,13 @@ export default function CreateCoursePage() {
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <Link
                 href="/profile"
-                className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-indigo-600/20 text-center"
+                className="rounded-2xl bg-indigo-600 px-6 py-3 text-center font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-700"
               >
                 Manage My Courses
               </Link>
               <Link
                 href="/courses"
-                className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-semibold hover:bg-slate-200 dark:hover:bg-slate-600 transition-all text-center"
+                className="rounded-2xl bg-slate-100 px-6 py-3 text-center font-semibold text-slate-700 transition-all hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
               >
                 Browse Courses
               </Link>
@@ -113,21 +113,21 @@ export default function CreateCoursePage() {
   }
 
   return (
-    <div className="py-8 max-w-2xl mx-auto w-full px-4">
+    <div className="w-full max-w-2xl">
       <Link 
         href="/courses" 
-        className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-8 font-medium"
+        className="mb-8 inline-flex items-center font-medium text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
       >
         <ArrowLeft size={20} className="mr-2" /> Back to Courses
       </Link>
 
-      <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden">
-        <div className="p-8 sm:p-12">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Create New Course</h1>
+      <div className="surface-panel overflow-hidden">
+        <div className="px-8 py-12 sm:px-12">
+          <h1 className="mb-2 text-3xl font-bold text-slate-950 dark:text-slate-100">Create New Course</h1>
           <p className="text-slate-500 dark:text-slate-400 mb-6">Fill in the details below to publish your new course.</p>
 
           {/* Lesson frequency notice */}
-          <div className="flex items-start gap-3 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700/50 rounded-xl px-4 py-3 mb-8">
+          <div className="mb-8 flex items-start gap-3 rounded-2xl border border-indigo-200/70 bg-indigo-50/80 px-4 py-3 dark:border-indigo-700/50 dark:bg-indigo-900/20">
             <Info size={18} className="mt-0.5 shrink-0 text-indigo-500 dark:text-indigo-400" />
             <p className="text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed">
               <span className="font-semibold">Keep your students engaged!</span> Once your course is live, you are expected to publish{" "}
@@ -136,7 +136,7 @@ export default function CreateCoursePage() {
           </div>
 
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm font-medium mb-6">
+            <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
               {error}
             </div>
           )}
@@ -151,7 +151,7 @@ export default function CreateCoursePage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="appearance-none block w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-sm bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-950"
+                className="input-base"
                 placeholder="e.g. Advanced React Patterns"
               />
             </div>
@@ -165,7 +165,7 @@ export default function CreateCoursePage() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={6}
-                className="appearance-none block w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-sm bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-950 resize-none"
+                className="input-base min-h-40 resize-none"
                 placeholder="What will students learn in this course?"
               />
             </div>
@@ -174,7 +174,7 @@ export default function CreateCoursePage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-lg shadow-indigo-600/20 text-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:opacity-70 disabled:hover:translate-y-0 disabled:cursor-not-allowed active:scale-[0.98]"
+                className="flex w-full justify-center rounded-2xl bg-indigo-600 px-4 py-4 text-lg font-bold text-white shadow-lg shadow-indigo-600/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 active:scale-[0.98]"
               >
                 {isLoading ? (
                   <Loader2 className="animate-spin h-6 w-6 text-white" />

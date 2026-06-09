@@ -122,7 +122,7 @@ export default function ProfilePage() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="animate-spin h-12 w-12 text-indigo-600" />
       </div>
     );
@@ -130,8 +130,8 @@ export default function ProfilePage() {
 
   if (error || !profile) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-        <div className="bg-red-50 border border-red-200 text-red-600 px-6 py-8 rounded-3xl text-center max-w-lg mx-auto">
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="surface-panel max-w-lg px-6 py-8 text-center text-red-600">
           <h3 className="font-bold text-xl mb-2">Oops!</h3>
           <p>{error || "Failed to load profile."}</p>
         </div>
@@ -144,22 +144,22 @@ export default function ProfilePage() {
     : profile.username;
 
   return (
-    <div className="py-8 max-w-5xl mx-auto w-full">
+    <div className="w-full max-w-5xl space-y-12">
       {/* Profile Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden mb-12 relative">
-        <div className="h-48 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 relative">
+      <div className="surface-panel overflow-hidden relative">
+        <div className="relative h-48 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
           <button 
             onClick={() => setIsEditModalOpen(true)}
-            className="absolute top-6 right-6 p-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl text-white hover:bg-white/30 transition-all z-10"
+            className="absolute top-6 right-6 z-10 rounded-2xl border border-white/30 bg-white/20 p-3 text-white backdrop-blur-md transition-all hover:bg-white/30"
             title="Edit Profile"
           >
             <Settings size={20} />
           </button>
         </div>
         
-        <div className="px-8 pb-8 relative">
-          <div className="absolute -top-16 left-8 bg-white dark:bg-slate-800 p-2 rounded-full shadow-lg border border-slate-100 dark:border-slate-700">
-            <div className="w-32 h-32 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center text-indigo-500 dark:text-indigo-400">
+        <div className="relative px-8 pb-8">
+          <div className="absolute -top-16 left-8 rounded-full border border-slate-100 bg-white p-2 shadow-lg dark:border-slate-700 dark:bg-slate-950">
+            <div className="flex h-32 w-32 items-center justify-center rounded-full bg-indigo-50 text-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-400">
               <UserIcon size={64} />
             </div>
           </div>
@@ -167,9 +167,9 @@ export default function ProfilePage() {
           <div className="pt-20 pl-2 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-black text-slate-900 dark:text-slate-100 leading-tight">{displayName}</h1>
+                <h1 className="text-3xl font-black leading-tight text-slate-950 dark:text-slate-100">{displayName}</h1>
                 {profile.is_author && (
-                  <span className="bg-indigo-600 text-white text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-widest shadow-sm">
+                  <span className="rounded-md bg-indigo-600 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white shadow-sm">
                     PRO TEACHER
                   </span>
                 )}
@@ -184,13 +184,13 @@ export default function ProfilePage() {
 
               <div className="flex flex-wrap gap-4 mt-6">
                 {profile.email && (
-                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 px-3 py-1.5 rounded-lg text-sm border border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400">
                     <Mail size={14} className="text-indigo-500" />
                     {profile.email}
                   </div>
                 )}
                 {profile.phone_number && (
-                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 px-3 py-1.5 rounded-lg text-sm border border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400">
                     <Phone size={14} className="text-purple-500" />
                     {profile.phone_number}
                   </div>
@@ -200,7 +200,7 @@ export default function ProfilePage() {
               {/* Certificates Display */}
               <div className="flex flex-wrap gap-2 mt-4">
                 {profile.my_certificates?.map((cert: any, idx: number) => (
-                  <span key={idx} className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border border-amber-200 dark:border-amber-800 flex items-center gap-1.5 shadow-sm">
+                  <span key={idx} className="flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-amber-700 shadow-sm dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400">
                     <Check size={12} /> {cert.name}
                   </span>
                 ))}
@@ -211,14 +211,14 @@ export default function ProfilePage() {
               {profile.is_author && (
                 <Link 
                   href="/courses/create" 
-                  className="inline-flex items-center justify-center px-6 py-3 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-600/20 active:scale-95"
+                  className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-6 py-3 font-bold text-white shadow-xl shadow-indigo-600/20 transition-all hover:bg-indigo-700 active:scale-95"
                 >
                   Create Course
                 </Link>
               )}
               <button 
                 onClick={() => setIsEditModalOpen(true)}
-                className="inline-flex items-center justify-center px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-all active:scale-95"
+                className="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-6 py-3 font-bold text-slate-700 transition-all hover:bg-slate-200 active:scale-95 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
               >
                 Edit Profile
               </button>
@@ -229,16 +229,16 @@ export default function ProfilePage() {
 
       {/* Edit Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto">
-          <div className="my-8 bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
-              <h2 className="text-xl font-black text-slate-900 dark:text-slate-100">Update Profile</h2>
-              <button onClick={() => setIsEditModalOpen(false)} className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-colors">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-slate-900/60 p-4 backdrop-blur-sm">
+          <div className="my-8 surface-panel w-full max-w-xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/60 px-8 py-6 dark:border-slate-800 dark:bg-slate-950/40">
+              <h2 className="text-xl font-black text-slate-950 dark:text-slate-100">Update Profile</h2>
+              <button onClick={() => setIsEditModalOpen(false)} className="rounded-xl p-2 transition-colors hover:bg-white dark:hover:bg-slate-700">
                 <X size={20} className="text-slate-400" />
               </button>
             </div>
             
-            <form onSubmit={handleUpdateProfile} className="p-8 space-y-6">
+            <form onSubmit={handleUpdateProfile} className="space-y-6 p-8">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">First Name</label>
@@ -246,7 +246,7 @@ export default function ProfilePage() {
                     type="text" 
                     value={editForm.first_name}
                     onChange={(e) => setEditForm({...editForm, first_name: e.target.value})}
-                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900 dark:text-slate-100 font-medium"
+                    className="input-base font-medium"
                   />
                 </div>
                 <div>
@@ -255,7 +255,7 @@ export default function ProfilePage() {
                     type="text" 
                     value={editForm.last_name}
                     onChange={(e) => setEditForm({...editForm, last_name: e.target.value})}
-                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900 dark:text-slate-100 font-medium"
+                    className="input-base font-medium"
                   />
                 </div>
               </div>
