@@ -8,9 +8,9 @@ import Link from "next/link";
 import { Loader2, ArrowRight, BookOpen, Zap, Users } from "lucide-react";
 
 const PERKS = [
-  { icon: BookOpen, text: "Access 100+ community courses" },
+  { icon: BookOpen, text: "Access community courses" },
   { icon: Users, text: "Join live classrooms with peers" },
-  { icon: Zap, text: "Learn at your own pace, for free" },
+  { icon: Zap, text: "Learn at your own pace" },
 ];
 
 export default function Login() {
@@ -127,7 +127,7 @@ export default function Login() {
                 href="/auth/register"
                 className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
               >
-                Sign up for free
+                Sign up
               </Link>
             </p>
           </div>
