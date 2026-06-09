@@ -23,7 +23,7 @@ class ClassroomDetailSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         
         if request and request.user.is_authenticated:
-            if obj.course.user == request.user or obj.students.filter(id=request.user.id).exists():
+            if obj.course.user_id == request.user.id or any(student.id == request.user.id for student in obj.students.all()):
                 return MessageSerializer(obj.messages.all(), many=True).data
         return []   
     
@@ -85,24 +85,24 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     def get_is_enrolled(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            return obj.users.filter(id=request.user.id).exists()
+            return any(student.id == request.user.id for student in obj.users.all())
         return False
 
     def get_is_author(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            return obj.user == request.user
+            return obj.user_id == request.user.id
         return False
 
     def get_lessons(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            if obj.user == request.user or obj.users.filter(id=request.user.id).exists():
+            if obj.user_id == request.user.id or any(student.id == request.user.id for student in obj.users.all()):
                 return LessonSerializer(obj.lessons.all(), many=True).data
         return []
 
     def get_classroom(self, obj):
-        classroom = obj.classrooms.first()
+        classroom = next(iter(obj.classrooms.all()), None)
         if classroom:
             return {'id': classroom.id, 'name': classroom.name}
         return None
@@ -110,9 +110,9 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     def get_is_in_classroom(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            classroom = obj.classrooms.first()
+            classroom = next(iter(obj.classrooms.all()), None)
             if classroom:
-                return classroom.students.filter(id=request.user.id).exists()
+                return any(student.id == request.user.id for student in classroom.students.all())
         return False
 
     class Meta:

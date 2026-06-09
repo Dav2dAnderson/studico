@@ -37,9 +37,8 @@ class ClassroomAdmin(admin.ModelAdmin):
         if db_field.name == "students":
             classroom_id = request.resolver_match.kwargs.get('object_id')
             if classroom_id:
-                classroom = Classroom.objects.get(pk=classroom_id)
+                classroom = Classroom.objects.select_related("course").prefetch_related("course__users").get(pk=classroom_id)
                 kwargs['queryset'] = classroom.course.users.all()
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
         
-

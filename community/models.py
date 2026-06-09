@@ -45,11 +45,15 @@ class Application(models.Model):
     class Meta:
         verbose_name = "Application"
         verbose_name_plural = "Applications"
+        indexes = [
+            models.Index(fields=["user", "accepted"]),
+            models.Index(fields=["created_at"]),
+        ]
 
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=150, null=True, blank=True)
+    slug = models.SlugField(max_length=150, null=True, blank=True, db_index=True)
     user = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE, related_name="courses")
     description = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=[
@@ -76,6 +80,10 @@ class Course(models.Model):
     class Meta:
         verbose_name = "Course"
         verbose_name_plural = "Courses"
+        indexes = [
+            models.Index(fields=["user", "created_at"]),
+            models.Index(fields=["status"]),
+        ]
 
 
 class Lesson(models.Model):
@@ -83,7 +91,7 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lessons")
     content = RichTextField()
     file = models.FileField(upload_to="lessons/", null=True, blank=True)
-    slug = models.SlugField(max_length=150, null=True, blank=True)
+    slug = models.SlugField(max_length=150, null=True, blank=True, db_index=True)
     finished = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -106,6 +114,9 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = "Lesson"
         verbose_name_plural = "Lessons"
+        indexes = [
+            models.Index(fields=["course", "created_at"]),
+        ]
     
 
 class Classroom(models.Model):
@@ -122,5 +133,6 @@ class Classroom(models.Model):
     class Meta:
         verbose_name = "Classroom"
         verbose_name_plural = "Classrooms"
-
-
+        indexes = [
+            models.Index(fields=["course", "created_date"]),
+        ]

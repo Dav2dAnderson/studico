@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from django.db.models import Prefetch
 
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
@@ -11,6 +12,7 @@ from .models import Application, Course, Lesson, Classroom
 from .serializers import (ApplicationSerializer, CourseSerializer, CourseDetailSerializer, 
 LessonSerializer, LessonDetailSerializer, ClassroomSerializer, ClassroomDetailSerializer)
 from .permissions import IsAuthorOrReadOnly, IsEnrolledOrAuthor, IsEnrolledToCourse
+from chatting.models import Message
 # Create your views here.
 
 
@@ -19,11 +21,11 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     serializer_class = ApplicationSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        return self.queryset.select_related("user").filter(user=self.request.user)
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-    def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -37,6 +39,21 @@ class CourseViewSet(viewsets.ModelViewSet):
         if self.action == 'retrieve':
             return CourseDetailSerializer
         return CourseSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset.select_related("user")
+
+        if self.action in {"retrieve", "join_classroom"}:
+            return queryset.prefetch_related(
+                "users",
+                "lessons",
+                Prefetch(
+                    "classrooms",
+                    queryset=Classroom.objects.prefetch_related("students"),
+                ),
+            )
+
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -62,9 +79,9 @@ class CourseViewSet(viewsets.ModelViewSet):
         course = self.get_object()
         user = request.user
         # Only enrolled users or the course author can join the classroom
-        if not (user.studying_in.filter(id=course.id).exists() or course.user == user):
+        if not (user.studying_in.filter(id=course.id).exists() or course.user_id == user.id):
             return Response({'detail': 'You must be enrolled in this course to join its classroom.'}, status=status.HTTP_403_FORBIDDEN)
-        classroom = course.classrooms.first()
+        classroom = next(iter(course.classrooms.all()), None)
         if not classroom:
             return Response({'detail': 'This course has no classroom yet.'}, status=status.HTTP_404_NOT_FOUND)
         classroom.students.add(user)
@@ -81,7 +98,25 @@ class LessonViewSet(viewsets.ModelViewSet):
         return [IsAuthorOrReadOnly()]
 
     def get_queryset(self):
-        return Lesson.objects.filter(course__slug=self.kwargs['course_slug'])
+        queryset = Lesson.objects.select_related("course", "course__user").filter(course__slug=self.kwargs['course_slug'])
+
+        if self.action == "retrieve":
+            return queryset.prefetch_related(
+                "course__users",
+                "course__lessons",
+                Prefetch(
+                    "course__classrooms",
+                    queryset=Classroom.objects.prefetch_related(
+                        Prefetch(
+                            "messages",
+                            queryset=Message.objects.select_related("sender"),
+                        ),
+                        "students",
+                    ),
+                ),
+            )
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -103,10 +138,19 @@ class ClassroomViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_authenticated:
             from django.db.models import Q
-            return self.queryset.filter(
+            queryset = self.queryset.select_related("course", "course__user").filter(
                 Q(students=self.request.user) |
                 Q(course__user=self.request.user)
             ).distinct()
+            if self.action == "retrieve":
+                return queryset.prefetch_related(
+                    "students",
+                    Prefetch(
+                        "messages",
+                        queryset=Message.objects.select_related("sender"),
+                    ),
+                )
+            return queryset
         return self.queryset.none()
 
     def get_serializer_class(self):
@@ -116,7 +160,6 @@ class ClassroomViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def send_message(self, request, id=None):
-        from chatting.models import Message
         from chatting.serializers import MessageSerializer as MsgSerializer
         classroom = self.get_object()
         content = request.data.get('content', '').strip()
@@ -128,8 +171,5 @@ class ClassroomViewSet(viewsets.ModelViewSet):
             content=content,
         )
         return Response(MsgSerializer(message).data, status=status.HTTP_201_CREATED)
-
-
-
 
 

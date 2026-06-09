@@ -17,5 +17,8 @@ class Message(models.Model):
         verbose_name = "Message"
         verbose_name_plural = "Messages"
         ordering = ['created_date']
-
+        indexes = [
+            models.Index(fields=["classroom", "created_date"]),
+            models.Index(fields=["sender", "created_date"]),
+        ]
 
