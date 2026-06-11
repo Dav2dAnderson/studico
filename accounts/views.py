@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
-from .serializers import CustomUserSerializer, UserRegistrationSerializer, UserShortSerializer, UserLogOutSerializer, CertificateSerializer
+from .serializers import (CustomUserSerializer, UserRegistrationSerializer, UserShortSerializer, UserLogOutSerializer, 
+                          CertificateSerializer, PasswordChangeSerializer)
 from .models import CustomUser, Certificate
 
 # Create your views here.
@@ -66,3 +67,15 @@ class UserLogOutView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response({"detail": "User has logged out"}, status=status.HTTP_205_RESET_CONTENT)
+    
+
+class PasswordChangeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"detail": "Password has been updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

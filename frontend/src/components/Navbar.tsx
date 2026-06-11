@@ -14,6 +14,7 @@ import {
   Sparkles,
   LayoutDashboard,
   GraduationCap,
+  KeyRound,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
@@ -175,6 +176,13 @@ export function Navbar() {
                             <User size={15} className="text-slate-400" />
                             Profile
                           </Link>
+                          <Link
+                            href="/auth/change-password"
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
+                          >
+                            <KeyRound size={15} className="text-slate-400" />
+                            Change Password
+                          </Link>
                           {user.is_author && (
                             <Link
                               href="/courses/create"
@@ -268,6 +276,9 @@ export function Navbar() {
                   <>
                     <Link href="/profile" className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
                       <User size={16} /> Profile
+                    </Link>
+                    <Link href="/auth/change-password" className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                      <KeyRound size={16} /> Change Password
                     </Link>
                     <button
                       onClick={logout}

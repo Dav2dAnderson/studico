@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { Loader2, User as UserIcon, BookOpen, Clock, Calendar, Settings, X, Check, Phone, Mail, FileText } from "lucide-react";
+import { Loader2, User as UserIcon, BookOpen, Settings, X, Check, Phone, Mail } from "lucide-react";
 import Link from "next/link";
 import axiosInstance from "@/lib/axios";
 
@@ -33,6 +33,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [notification, setNotification] = useState("");
   
   // Edit state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -83,6 +84,14 @@ export default function ProfilePage() {
       fetchProfile();
     }
   }, [user, authLoading, router]);
+
+  useEffect(() => {
+    const message = window.sessionStorage.getItem("profile_notification");
+    if (message) {
+      setNotification(message);
+      window.sessionStorage.removeItem("profile_notification");
+    }
+  }, []);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,6 +154,27 @@ export default function ProfilePage() {
 
   return (
     <div className="w-full max-w-5xl space-y-12">
+      {notification && (
+        <div className="surface-panel flex items-start justify-between gap-4 border-emerald-200/70 bg-emerald-50/80 px-5 py-4 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/15">
+              <Check size={16} className="text-emerald-600 dark:text-emerald-300" />
+            </div>
+            <div>
+              <p className="font-bold">Success</p>
+              <p className="text-sm text-emerald-700/90 dark:text-emerald-300/90">{notification}</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setNotification("")}
+            className="rounded-full p-1 text-emerald-700 transition-colors hover:bg-emerald-100 dark:text-emerald-300 dark:hover:bg-emerald-900/30"
+            aria-label="Dismiss notification"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
       {/* Profile Header */}
       <div className="surface-panel overflow-hidden relative">
         <div className="relative h-48 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
@@ -216,6 +246,12 @@ export default function ProfilePage() {
                   Create Course
                 </Link>
               )}
+              <Link
+                href="/auth/change-password"
+                className="inline-flex items-center justify-center rounded-2xl bg-white px-6 py-3 font-bold text-slate-700 transition-all hover:bg-slate-100 active:scale-95 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+              >
+                Change Password
+              </Link>
               <button 
                 onClick={() => setIsEditModalOpen(true)}
                 className="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-6 py-3 font-bold text-slate-700 transition-all hover:bg-slate-200 active:scale-95 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"

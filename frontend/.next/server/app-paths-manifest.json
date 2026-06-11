@@ -1,7 +1,6 @@
 {
   "/auth/login/page": "app/auth/login/page.js",
-  "/profile/page": "app/profile/page.js",
-  "/courses/[slug]/manage/page": "app/courses/[slug]/manage/page.js",
-  "/courses/[slug]/page": "app/courses/[slug]/page.js",
-  "/courses/[slug]/lessons/[lessonSlug]/page": "app/courses/[slug]/lessons/[lessonSlug]/page.js"
+  "/courses/page": "app/courses/page.js",
+  "/auth/change-password/page": "app/auth/change-password/page.js",
+  "/profile/page": "app/profile/page.js"
 }

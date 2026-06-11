@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
+from django.contrib.auth.password_validation import validate_password
+
 from .models import CustomUser, Certificate
+
 
 
 
@@ -94,3 +97,28 @@ class UserLogOutSerializer(serializers.Serializer):
     def save(self, **kwargs):
         token = RefreshToken(self.validated_data["refresh"])
         token.blacklist()
+
+
+class PasswordChangeSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password_confirm = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['password_confirm']:
+            raise serializers.ValidationError({"password_confirm": "Passwords didn't match."})
+        
+        if attrs['new_password'] == attrs['current_password']:
+            raise serializers.ValidationError({"new_password": "Your new password cannot be the same as your current password."})
+        
+        user = self.context['request'].user
+        if not user.check_password(attrs['current_password']):
+            raise serializers.ValidationError({'current_password': "Your current password was entered incorrectly."})
+
+        return attrs
+    
+    def save(self, **kwargs):
+        user = self.context['request'].user
+        user.set_password(self.validated_data["new_password"])
+        user.save()
+        return user
