@@ -2,8 +2,13 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
 
 from .models import CustomUser, Certificate
+from .tokens import account_activation_token
 
 
 
@@ -20,11 +25,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance = super().update(instance, validated_data)
         
         if certificates_data is not None:
-            certificate_objs = []
-            for name in certificates_data:
-                cert, created = Certificate.objects.get_or_create(name=name)
-                certificate_objs.append(cert)
-            instance.certificates.set(certificate_objs)
+            instance.certificates.set(certificates_data)
             
         return instance
 
@@ -64,6 +65,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ["username", "first_name", "last_name", "phone_number", "email", "password", "password_confirm", "gender"]
 
+        extra_kwargs = {
+            "first_name": {'required': True, 'allow_blank': False},
+            "last_name": {'required': True, 'allow_blank': False},
+            "email": {'required': True, 'allow_blank': False},
+            "gender": {'required': True, 'allow_blank': False}
+        }
+
     def validate(self, data):
         if data['password'] != data['password_confirm']:
             raise serializers.ValidationError({"password_confirm": "Passwords do not match."})
@@ -71,17 +79,29 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop("password_confirm")
+        password = validated_data.pop('password')
 
-        user = CustomUser.objects.create_user(
-            username=validated_data['username'],
-            password=validated_data['password'],
-            first_name=validated_data.get('first_name', ''),
-            last_name=validated_data.get('last_name', ''),
-            phone_number=validated_data.get('phone_number', ''),
-            email=validated_data.get('email', ''),
-            gender=validated_data.get('gender', ''),
-        )
-        return user
+        user = CustomUser(**validated_data)
+        user.set_password(password)
+        
+        user.is_active = False
+        user.email_verified = False
+        user.save()
+
+        request = self.context.get('request')
+        current_site = get_current_site(request)
+        uid = urlsafe_base64_encode(force_bytes(user.pk)).rstrip('=')
+        token = account_activation_token.make_token(user)
+
+        activation_link = f"http://{current_site.domain}/api/user_control/activate/{uid}/{token}/"
+
+        greeting = f"{user.first_name} {user.last_name}" if user.first_name and user.last_name else user.username
+
+        subject = "Activate your account"
+        message = f"Hi {greeting}.\n\nPlease click the link to confirm your email: \n{activation_link}"
+        send_mail(subject, message, 'noreply@studico.com', [user.email])
+
+        return user   
 
 
 class UserLogOutSerializer(serializers.Serializer):

@@ -132,7 +132,7 @@ LOGGING = {
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "studico.onrender.com"]
 
@@ -204,13 +204,13 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
+        # 'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/hour',
+        # 'anon': '10/hour',
         'user': '100/hour',
-        'register': '5/hour',
+        # 'register': '5/hour',
     }
 }
 
@@ -331,3 +331,5 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

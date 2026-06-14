@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,6 +10,7 @@ from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from .serializers import (CustomUserSerializer, UserRegistrationSerializer, UserShortSerializer, UserLogOutSerializer, 
                           CertificateSerializer, PasswordChangeSerializer)
 from .models import CustomUser, Certificate
+from .tokens import account_activation_token
 
 # Create your views here.
 
@@ -41,10 +44,10 @@ class CertificateListView(APIView):
 
 class UserRegistrationView(APIView):
     permission_classes = [permissions.AllowAny]
-    throttle_classes = [RegisterThrottle]
+    # throttle_classes = [RegisterThrottle]
 
     def post(self, request):
-        serializer = UserRegistrationSerializer(data=request.data)
+        serializer = UserRegistrationSerializer(data=request.data, context={'request': request})
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         user = serializer.save()
@@ -56,7 +59,29 @@ class UserRegistrationView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class ActivateUserView(APIView):
+    permission_classes = []
+
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = CustomUser.objects.get(pk=uid)
+        except (ValueError, TypeError, CustomUser.DoesNotExist):
+            user = None
         
+        # if user is not None and account_activation_token.check_token(user, token):
+        if user is not None:
+            print(user.username)
+            if account_activation_token.check_token(user, token):
+                print("OK OK")
+                user.is_active = True
+                user.email_verified = True
+                user.save()
+                return Response({"message": "Account activated successfully!"}, status=status.HTTP_200_OK)
+            return Response({"message": "Activation link is invalid or expired!"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserLogOutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
