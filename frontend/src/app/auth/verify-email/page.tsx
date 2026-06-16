@@ -2,14 +2,13 @@ import Link from "next/link";
 import { MailCheck, ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
 
 type VerifyEmailPageProps = {
-  searchParams?: {
-    email?: string | string[];
-  };
+  // Use Promise<any> to satisfy Next.js generated PageProps constraint
+  searchParams?: Promise<any>;
 };
 
-export default function VerifyEmailPage({ searchParams }: VerifyEmailPageProps) {
-  const email =
-    typeof searchParams?.email === "string" ? searchParams.email : undefined;
+export default async function VerifyEmailPage({ searchParams }: VerifyEmailPageProps) {
+  const params = await searchParams;
+  const email = typeof params?.email === "string" ? params.email : undefined;
 
   return (
     <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-5xl overflow-hidden rounded-[2.5rem] border border-slate-200/70 bg-white/65 shadow-2xl shadow-slate-900/5 backdrop-blur-2xl dark:border-slate-800/70 dark:bg-slate-950/50 lg:grid-cols-[0.95fr_1.05fr]">

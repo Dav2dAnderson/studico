@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST='{"app/courses/[slug]/manage/page.tsx -> @/components/RichTextEditor":{"id":92037,"files":["static/css/bcd3ca5273627146.css","static/chunks/263.2504118feb98299b.js","static/chunks/37.6cfe86fb14d58ee9.js"]}}';
+self.__REACT_LOADABLE_MANIFEST="{}"
