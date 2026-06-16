@@ -142,6 +142,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "https://studico-six.vercel.app",
     "https://studico.onrender.com",
+    "https://www.studico.uz",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -149,6 +150,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
     "https://studico-six.vercel.app",
     "https://studico.onrender.com",
+    "https://www.studico.uz",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
