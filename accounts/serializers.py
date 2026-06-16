@@ -132,7 +132,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             logging.error("Failed to send activation email", exc_info=exc)
             raise serializers.ValidationError({
                 "email": [
-                    "Unable to send activation email. Please verify your SMTP configuration and try again."
+                    f"Unable to send activation email: {str(exc)}. Please verify your SMTP configuration and try again."
                 ]
             })
 
