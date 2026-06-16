@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from django.contrib.auth.password_validation import validate_password
+from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -18,7 +19,18 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["id", "username", "email", "phone_number", "bio", "is_author", "first_name", "last_name", "certificates"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "email_verified",
+            "phone_number",
+            "bio",
+            "is_author",
+            "first_name",
+            "last_name",
+            "certificates",
+        ]
 
     def update(self, instance, validated_data):
         certificates_data = validated_data.pop('certificates', None)
@@ -54,7 +66,19 @@ class UserShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["id", "username", "first_name", "last_name", 'email', 'phone_number', 'studying_in', 'my_courses', 'is_author', 'my_certificates']
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "email_verified",
+            "phone_number",
+            "studying_in",
+            "my_courses",
+            "is_author",
+            "my_certificates",
+        ]
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -93,7 +117,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         uid = urlsafe_base64_encode(force_bytes(user.pk)).rstrip('=')
         token = account_activation_token.make_token(user)
 
-        activation_link = f"http://{current_site.domain}/api/user_control/activate/{uid}/{token}/"
+        frontend_url = getattr(settings, "FRONTEND_URL", f"http://{current_site.domain}:3000")
+        activation_link = f"{frontend_url}/auth/activate/{uid}/{token}"
 
         greeting = f"{user.first_name} {user.last_name}" if user.first_name and user.last_name else user.username
 

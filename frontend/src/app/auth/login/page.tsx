@@ -37,10 +37,20 @@ export default function Login() {
       if (err.rateLimitMessage) {
         setError(err.rateLimitMessage);
       } else {
+        const detail = err.response?.data?.detail;
+        const detailText =
+          typeof detail === "string" ? detail : JSON.stringify(detail || "");
+        const isEmailVerificationIssue =
+          detailText.toLowerCase().includes("active account") ||
+          detailText.toLowerCase().includes("inactive") ||
+          detailText.toLowerCase().includes("verify");
+
         setError(
-          err.response?.data?.detail ||
-            (err.response ? JSON.stringify(err.response.data) : err.message) ||
-            "Failed to login. Please check your credentials."
+          isEmailVerificationIssue
+            ? "Your account is not activated yet. Please check your email and click the verification link before signing in."
+            : detailText ||
+                (err.response ? JSON.stringify(err.response.data) : err.message) ||
+                "Failed to login. Please check your credentials."
         );
       }
     } finally {
@@ -134,9 +144,17 @@ export default function Login() {
 
           {/* Error */}
           {error && (
-            <div className="flex items-start gap-2 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600 dark:border-red-800 dark:bg-red-950/30 dark:text-red-400">
-              <span className="mt-0.5">⚠</span>
-              {error}
+            <div className="space-y-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600 dark:border-red-800 dark:bg-red-950/30 dark:text-red-400">
+              <div className="flex items-start gap-2">
+                <span className="mt-0.5">⚠</span>
+                <p>{error}</p>
+              </div>
+              {error.toLowerCase().includes("activated yet") && (
+                <div className="rounded-xl border border-red-200 bg-white/70 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-slate-950/40 dark:text-red-300">
+                  Didn&apos;t get the email? Check spam or register again with the
+                  correct address.
+                </div>
+              )}
             </div>
           )}
 

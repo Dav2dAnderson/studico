@@ -19,6 +19,7 @@ interface ProfileData {
   first_name: string;
   last_name: string;
   email: string;
+  email_verified?: boolean;
   phone_number: string;
   bio: string;
   is_author: boolean;
@@ -217,6 +218,18 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400">
                     <Mail size={14} className="text-indigo-500" />
                     {profile.email}
+                  </div>
+                )}
+                {typeof profile.email_verified === "boolean" && (
+                  <div
+                    className={`flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium ${
+                      profile.email_verified
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-300"
+                        : "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-300"
+                    }`}
+                  >
+                    <Check size={14} />
+                    {profile.email_verified ? "Email verified" : "Email not verified"}
                   </div>
                 )}
                 {profile.phone_number && (

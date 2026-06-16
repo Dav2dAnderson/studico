@@ -70,17 +70,17 @@ class ActivateUserView(APIView):
             user = CustomUser.objects.get(pk=uid)
         except (ValueError, TypeError, CustomUser.DoesNotExist):
             user = None
-        
-        # if user is not None and account_activation_token.check_token(user, token):
-        if user is not None:
-            print(user.username)
-            if account_activation_token.check_token(user, token):
-                print("OK OK")
-                user.is_active = True
-                user.email_verified = True
-                user.save()
-                return Response({"message": "Account activated successfully!"}, status=status.HTTP_200_OK)
-            return Response({"message": "Activation link is invalid or expired!"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.email_verified = True
+            user.save(update_fields=["is_active", "email_verified"])
+            return Response({"message": "Account activated successfully!"}, status=status.HTTP_200_OK)
+
+        return Response(
+            {"message": "Activation link is invalid or expired!"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 
 class UserLogOutView(APIView):

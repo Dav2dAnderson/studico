@@ -48,7 +48,9 @@ export default function Register() {
 
     try {
       await axiosInstance.post("/user_control/register/", formData);
-      router.push("/auth/login");
+      router.push(
+        `/auth/verify-email?email=${encodeURIComponent(formData.email)}`
+      );
     } catch (err: any) {
       if (err.rateLimitMessage) {
         setError(err.rateLimitMessage);

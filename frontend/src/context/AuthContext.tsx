@@ -8,6 +8,7 @@ interface User {
   username: string;
   first_name: string;
   last_name: string;
+  email_verified?: boolean;
   studying_in?: any[];
   my_courses?: any[];
   is_author: boolean;
