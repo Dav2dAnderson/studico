@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
+import logging
+
 from django.contrib.auth.password_validation import validate_password
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -124,7 +126,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         subject = "Activate your account"
         message = f"Hi {greeting}.\n\nPlease click the link to confirm your email: \n{activation_link}"
-        send_mail(subject, message, 'noreply@studico.com', [user.email])
+        try:
+            send_mail(subject, message, 'noreply@studico.com', [user.email])
+        except Exception as exc:
+            logging.error("Failed to send activation email", exc_info=exc)
+            raise serializers.ValidationError({
+                "email": [
+                    "Unable to send activation email. Please verify your SMTP configuration and try again."
+                ]
+            })
 
         return user   
 
