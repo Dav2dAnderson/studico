@@ -127,7 +127,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         subject = "Activate your account"
         message = f"Hi {greeting}.\n\nPlease click the link to confirm your email: \n{activation_link}"
         try:
-            send_mail(subject, message, 'noreply@studico.com', [user.email])
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
         except Exception as exc:
             logging.error("Failed to send activation email", exc_info=exc)
             raise serializers.ValidationError({
