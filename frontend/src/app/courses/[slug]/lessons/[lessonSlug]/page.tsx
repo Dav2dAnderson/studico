@@ -102,9 +102,9 @@ export default function LessonDetail() {
   }
 
   return (
-    <div className="py-8 max-w-4xl mx-auto w-full px-4">
+    <div className="py-8 max-w-4xl mx-auto w-full px-4 overflow-x-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-        <Link 
+        <Link
           href={`/courses/${slug}`}
           className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium"
         >
@@ -116,7 +116,7 @@ export default function LessonDetail() {
         </div>
       </div>
 
-      <article className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl">
+      <article className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden">
         <div className="p-8 sm:p-12 border-b border-slate-100 dark:border-slate-700 bg-slate-50/30 dark:bg-slate-900/30">
           <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm uppercase tracking-wider mb-2">
             <BookOpen size={16} />
@@ -130,10 +130,10 @@ export default function LessonDetail() {
         {/* Video Player Section */}
         {activeVideoUrl && (
           <div className="aspect-video bg-black border-b border-slate-200 dark:border-slate-700">
-            <video 
+            <video
               key={activeVideoUrl}
-              src={getMediaUrl(activeVideoUrl)} 
-              controls 
+              src={getMediaUrl(activeVideoUrl)}
+              controls
               className="w-full h-full"
             >
               Your browser does not support the video tag.
@@ -142,11 +142,11 @@ export default function LessonDetail() {
         )}
 
         <div className="p-8 sm:p-12">
-          <div 
-            className="prose prose-lg prose-indigo dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 mb-12 break-words overflow-wrap-anywhere"
-            style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}
-            dangerouslySetInnerHTML={{ 
-              __html: DOMPurify.sanitize(lesson.content || '<p class="italic text-slate-400">This lesson has no content yet.</p>') 
+          <div
+            className="prose prose-lg prose-indigo dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 mb-12 min-w-0"
+            style={{ overflowWrap: 'anywhere', wordBreak: 'break-word', minWidth: 0 }}
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(lesson.content || '<p class="italic text-slate-400">This lesson has no content yet.</p>')
             }}
           />
 
@@ -177,27 +177,26 @@ export default function LessonDetail() {
                           </p>
                         </div>
                       </div>
-                      
+
                       <div className="flex gap-2">
                         {fileIsVideo && (
-                          <button 
+                          <button
                             onClick={() => {
                               setActiveVideoUrl(lesson.file!);
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold border transition-all shadow-sm text-sm ${
-                              activeVideoUrl === lesson.file 
-                                ? 'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700' 
+                            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold border transition-all shadow-sm text-sm ${activeVideoUrl === lesson.file
+                                ? 'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700'
                                 : 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-indigo-100 dark:border-indigo-900/30 hover:bg-indigo-50 dark:hover:bg-slate-700'
-                            }`}
+                              }`}
                           >
                             <PlayCircle size={16} />
                             {activeVideoUrl === lesson.file ? 'Playing' : 'Play'}
                           </button>
                         )}
 
-                        <a 
-                          href={getMediaUrl(lesson.file)} 
+                        <a
+                          href={getMediaUrl(lesson.file)}
                           download
                           target="_blank"
                           rel="noopener noreferrer"

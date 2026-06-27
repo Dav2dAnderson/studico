@@ -61,3 +61,7 @@ wheels/
 node_modules/
 frontend/node_modules/
 logs/
+
+
+frontend/.next/
+frontend/node_modules/
