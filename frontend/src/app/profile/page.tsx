@@ -154,7 +154,7 @@ export default function ProfilePage() {
     : profile.username;
 
   return (
-    <div className="w-full max-w-5xl space-y-12">
+    <div className="w-full max-w-5xl mx-auto space-y-10 sm:space-y-12">
       {notification && (
         <div className="surface-panel flex items-start justify-between gap-4 border-emerald-200/70 bg-emerald-50/80 px-5 py-4 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
           <div className="flex items-start gap-3">
@@ -178,7 +178,7 @@ export default function ProfilePage() {
 
       {/* Profile Header */}
       <div className="surface-panel overflow-hidden relative">
-        <div className="relative h-48 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+        <div className="relative h-32 sm:h-48 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
           <button 
             onClick={() => setIsEditModalOpen(true)}
             className="absolute top-6 right-6 z-10 rounded-2xl border border-white/30 bg-white/20 p-3 text-white backdrop-blur-md transition-all hover:bg-white/30"
@@ -195,7 +195,7 @@ export default function ProfilePage() {
             </div>
           </div>
           
-          <div className="pt-20 pl-2 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div className="pt-20 pl-2 flex flex-col gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-black leading-tight text-slate-950 dark:text-slate-100">{displayName}</h1>
@@ -250,24 +250,24 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               {profile.is_author && (
                 <Link 
                   href="/courses/create" 
-                  className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-6 py-3 font-bold text-white shadow-xl shadow-indigo-600/20 transition-all hover:bg-indigo-700 active:scale-95"
+                  className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-bold text-white shadow-xl shadow-indigo-600/20 transition-all hover:bg-indigo-700 active:scale-95"
                 >
                   Create Course
                 </Link>
               )}
               <Link
                 href="/auth/change-password"
-                className="inline-flex items-center justify-center rounded-2xl bg-white px-6 py-3 font-bold text-slate-700 transition-all hover:bg-slate-100 active:scale-95 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                className="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-bold text-slate-700 transition-all hover:bg-slate-100 active:scale-95 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               >
                 Change Password
               </Link>
               <button 
                 onClick={() => setIsEditModalOpen(true)}
-                className="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-6 py-3 font-bold text-slate-700 transition-all hover:bg-slate-200 active:scale-95 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
+                className="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-bold text-slate-700 transition-all hover:bg-slate-200 active:scale-95 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
               >
                 Edit Profile
               </button>
@@ -288,7 +288,7 @@ export default function ProfilePage() {
             </div>
             
             <form onSubmit={handleUpdateProfile} className="space-y-6 p-8">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">First Name</label>
                   <input 
@@ -320,7 +320,7 @@ export default function ProfilePage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Email</label>
                   <input 
@@ -417,7 +417,7 @@ export default function ProfilePage() {
           </div>
 
           {profile.studying_in && profile.studying_in.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
               {profile.studying_in.map((course) => (
                 <Link 
                   href={`/courses/${course.slug}`} 
@@ -449,7 +449,7 @@ export default function ProfilePage() {
               ))}
             </div>
           ) : (
-            <div className="bg-slate-50/50 dark:bg-slate-900/20 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800 p-16 text-center">
+            <div className="bg-slate-50/50 dark:bg-slate-900/20 rounded-[2rem] sm:rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800 p-8 sm:p-16 text-center">
               <div className="mx-auto w-20 h-20 bg-white dark:bg-slate-800 rounded-[2rem] shadow-sm flex items-center justify-center mb-6 text-slate-300 dark:text-slate-600">
                 <BookOpen size={40} />
               </div>
@@ -478,7 +478,7 @@ export default function ProfilePage() {
             </div>
 
             {profile.my_courses && profile.my_courses.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
                 {profile.my_courses.map((course) => (
                   <Link 
                     href={`/courses/${course.slug}/manage`} 
@@ -508,7 +508,7 @@ export default function ProfilePage() {
                 ))}
               </div>
             ) : (
-              <div className="bg-slate-50/50 dark:bg-slate-900/20 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800 p-16 text-center">
+              <div className="bg-slate-50/50 dark:bg-slate-900/20 rounded-[2rem] sm:rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800 p-8 sm:p-16 text-center">
                 <h3 className="text-2xl font-black text-slate-800 dark:text-slate-200 mb-3">Ready to share your wisdom?</h3>
                 <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-10 text-lg">
                   Create your first course and inspire thousands of students.

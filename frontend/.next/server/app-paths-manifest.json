@@ -1,6 +1,6 @@
 {
-  "/auth/verify-email/page": "app/auth/verify-email/page.js",
-  "/auth/activate/[uidb64]/[token]/page": "app/auth/activate/[uidb64]/[token]/page.js",
+  "/page": "app/page.js",
+  "/courses/page": "app/courses/page.js",
   "/auth/login/page": "app/auth/login/page.js",
-  "/courses/page": "app/courses/page.js"
+  "/courses/[slug]/page": "app/courses/[slug]/page.js"
 }

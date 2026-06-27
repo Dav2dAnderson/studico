@@ -165,15 +165,15 @@
   }
 
   .page-shell {
-    @apply relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 flex flex-1 flex-col;
+    @apply relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10;
   }
 
   .surface-panel {
-    @apply rounded-[2rem] border border-white/60 dark:border-slate-800/70 bg-white/80 dark:bg-slate-950/65 shadow-[0_20px_60px_-30px_rgba(15,23,42,0.45)] backdrop-blur-2xl;
+    @apply rounded-[1.25rem] sm:rounded-[2rem] border border-white/60 dark:border-slate-800/70 bg-white/80 dark:bg-slate-950/65 shadow-[0_20px_60px_-30px_rgba(15,23,42,0.45)] backdrop-blur-2xl;
   }
 
   .surface-panel-soft {
-    @apply rounded-[2rem] border border-slate-200/70 dark:border-slate-800/80 bg-white/70 dark:bg-slate-950/55 shadow-lg shadow-slate-900/5 dark:shadow-black/20 backdrop-blur-xl;
+    @apply rounded-[1.25rem] sm:rounded-[2rem] border border-slate-200/70 dark:border-slate-800/80 bg-white/70 dark:bg-slate-950/55 shadow-lg shadow-slate-900/5 dark:shadow-black/20 backdrop-blur-xl;
   }
 
   .page-eyebrow {
@@ -181,11 +181,11 @@
   }
 
   .page-title {
-    @apply text-4xl sm:text-5xl font-black tracking-tight text-slate-950 dark:text-white;
+    @apply text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-950 dark:text-white;
   }
 
   .page-subtitle {
-    @apply text-base sm:text-lg leading-relaxed text-slate-500 dark:text-slate-400;
+    @apply text-sm sm:text-base lg:text-lg leading-relaxed text-slate-500 dark:text-slate-400;
   }
 
   /* Animation utilities */
@@ -243,12 +243,12 @@
 
   /* Button styles */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold text-white;
+    @apply inline-flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold text-white;
     @apply bg-indigo-600 hover:bg-indigo-700 transition-all duration-200;
     @apply shadow-lg shadow-indigo-600/25 hover:-translate-y-0.5 active:scale-[0.98];
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold;
+    @apply inline-flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold;
     @apply bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200;
     @apply border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600;
     @apply transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98];
@@ -256,8 +256,8 @@
 
   /* Input base */
   .input-base {
-    @apply w-full px-4 py-3 rounded-2xl border border-slate-200/80 dark:border-slate-700/80;
-    @apply bg-white/80 dark:bg-slate-950/60 text-slate-900 dark:text-slate-100;
+    @apply w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-2xl border border-slate-200/80 dark:border-slate-700/80;
+    @apply bg-white/80 dark:bg-slate-950/60 text-slate-900 dark:text-slate-100 text-sm sm:text-base;
     @apply placeholder-slate-400 dark:placeholder-slate-600;
     @apply focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500;
     @apply transition-all duration-200 shadow-sm shadow-slate-900/5;

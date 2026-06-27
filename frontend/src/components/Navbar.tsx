@@ -246,16 +246,16 @@ export function Navbar() {
         {mobileOpen && (
           <div className="animate-fade-up border-t border-slate-200/70 bg-white/95 backdrop-blur-2xl dark:border-slate-800/70 dark:bg-slate-950/95 sm:hidden">
             <div className="px-4 py-4 space-y-1">
-              <Link href="/courses" className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium ${navLinkClass("/courses")}`}>
+              <Link href="/courses" className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 min-h-[44px] text-sm font-medium ${navLinkClass("/courses")}`}>
                 <BookOpen size={16} /> Courses
               </Link>
               {!user?.is_author && (
-                <Link href="/applications" className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium ${navLinkClass("/applications")}`}>
+                <Link href="/applications" className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 min-h-[44px] text-sm font-medium ${navLinkClass("/applications")}`}>
                   <Sparkles size={16} /> Apply to Teach
                 </Link>
               )}
               {user?.is_author && (
-                <Link href="/courses/create" className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium ${navLinkClass("/courses/create")}`}>
+                <Link href="/courses/create" className={`flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 min-h-[44px] text-sm font-medium ${navLinkClass("/courses/create")}`}>
                   <BookOpen size={16} /> Create Course
                 </Link>
               )}
@@ -265,7 +265,7 @@ export function Navbar() {
               {/* Theme */}
               <button
                 onClick={toggleTheme}
-                className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 min-h-[44px] text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
                 {theme === "light" ? "Dark Mode" : "Light Mode"}
@@ -274,25 +274,25 @@ export function Navbar() {
               {!loading && (
                 user ? (
                   <>
-                    <Link href="/profile" className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                    <Link href="/profile" className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 min-h-[44px] text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
                       <User size={16} /> Profile
                     </Link>
-                    <Link href="/auth/change-password" className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+                    <Link href="/auth/change-password" className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 min-h-[44px] text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
                       <KeyRound size={16} /> Change Password
                     </Link>
                     <button
                       onClick={logout}
-                      className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium text-red-500 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+                      className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 min-h-[44px] text-sm font-medium text-red-500 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
                     >
                       <LogOut size={16} /> Sign Out
                     </button>
                   </>
                 ) : (
                   <div className="flex gap-2 pt-1">
-                    <Link href="/auth/login" className="flex-1 rounded-2xl border border-slate-200 px-3 py-2.5 text-center text-sm font-semibold text-slate-700 transition-all hover:border-indigo-300 dark:border-slate-700 dark:text-slate-200">
+                    <Link href="/auth/login" className="flex-1 rounded-2xl border border-slate-200 px-3 py-2.5 min-h-[44px] text-center text-sm font-semibold text-slate-700 transition-all hover:border-indigo-300 dark:border-slate-700 dark:text-slate-200">
                       Sign In
                     </Link>
-                    <Link href="/auth/register" className="flex-1 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 px-3 py-2.5 text-center text-sm font-semibold text-white shadow-md shadow-indigo-600/25 transition-all hover:opacity-90">
+                    <Link href="/auth/register" className="flex-1 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 px-3 py-2.5 min-h-[44px] text-center text-sm font-semibold text-white shadow-md shadow-indigo-600/25 transition-all hover:opacity-90">
                       Get Started
                     </Link>
                   </div>

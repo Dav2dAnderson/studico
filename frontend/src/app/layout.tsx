@@ -52,8 +52,8 @@ export default function RootLayout({
               className="pointer-events-none absolute inset-0 overflow-hidden"
             >
               <div className="absolute -top-32 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-indigo-500/10 blur-3xl dark:bg-indigo-500/15" />
-              <div className="absolute top-[18rem] right-[-8rem] h-[24rem] w-[24rem] rounded-full bg-purple-500/10 blur-3xl dark:bg-purple-500/10" />
-              <div className="absolute bottom-0 left-[-6rem] h-[22rem] w-[22rem] rounded-full bg-sky-500/10 blur-3xl dark:bg-sky-500/10" />
+              <div className="absolute top-[18rem] right-0 h-[24rem] w-[24rem] translate-x-1/2 rounded-full bg-purple-500/10 blur-3xl dark:bg-purple-500/10" />
+              <div className="absolute bottom-0 left-0 h-[22rem] w-[22rem] -translate-x-1/2 rounded-full bg-sky-500/10 blur-3xl dark:bg-sky-500/10" />
               <div
                 className="absolute inset-0 opacity-[0.03] dark:opacity-[0.06]"
                 style={{

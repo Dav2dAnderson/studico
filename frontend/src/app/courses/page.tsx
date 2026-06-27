@@ -121,7 +121,7 @@ export default function Courses() {
         </div>
 
         {/* Search bar */}
-        <div className="relative max-w-xl">
+        <div className="relative w-full sm:max-w-xl">
           <Search
             size={18}
             className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
@@ -166,7 +166,7 @@ export default function Courses() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filtered.map((course, i) => {
             const gradient = CARD_GRADIENTS[i % CARD_GRADIENTS.length];
             const authorName =
