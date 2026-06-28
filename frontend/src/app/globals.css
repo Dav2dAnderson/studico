@@ -3,6 +3,18 @@
 @tailwind utilities;
 
 /* ============================================================
+   GLOBAL WORD BREAK PREVENTION
+   ============================================================ */
+* {
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+  -moz-hyphens: none !important;
+  -ms-hyphens: none !important;
+}
+
+/* ============================================================
    DESIGN TOKENS
    ============================================================ */
 @layer base {
