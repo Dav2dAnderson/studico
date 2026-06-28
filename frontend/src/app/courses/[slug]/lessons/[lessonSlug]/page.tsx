@@ -3,16 +3,25 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios";
 import { useParams, useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, BookOpen, Clock, FileUp, PlayCircle } from "lucide-react";
+import { Loader2, ArrowLeft, BookOpen, Clock, FileUp, PlayCircle, ChevronRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css'; // Premium dark theme for code snippet
 import { useEffect as useIsomorphicLayoutEffect } from 'react';
 
+interface Lesson {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  created_at: string;
+}
+
 interface LessonDetail {
   id: number;
   title: string;
+  slug: string;
   content: string;
   file: string | null;
   created_at: string;
@@ -26,6 +35,7 @@ export default function LessonDetail() {
   const { slug, lessonSlug } = useParams();
   const router = useRouter();
   const [lesson, setLesson] = useState<LessonDetail | null>(null);
+  const [courseLessons, setCourseLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeVideoUrl, setActiveVideoUrl] = useState<string>("");
@@ -47,15 +57,32 @@ export default function LessonDetail() {
     return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
   };
 
+  const getPreviousAndNextLesson = () => {
+    if (!lesson || courseLessons.length === 0) return { previous: null, next: null };
+
+    const currentIndex = courseLessons.findIndex(l => l.id === lesson.id);
+    const previous = currentIndex > 0 ? courseLessons[currentIndex - 1] : null;
+    const next = currentIndex < courseLessons.length - 1 ? courseLessons[currentIndex + 1] : null;
+
+    return { previous, next };
+  };
+
   useEffect(() => {
     if (!slug || !lessonSlug) return;
 
-    const fetchLesson = async () => {
+    const fetchLessonData = async () => {
       try {
-        const res = await axiosInstance.get(`/courses/${slug}/lessons/${lessonSlug}/`);
-        setLesson(res.data);
-        if (res.data.file && isVideo(res.data.file)) {
-          setActiveVideoUrl(res.data.file);
+        // Fetch both lesson and course lessons in parallel
+        const [lessonRes, courseRes] = await Promise.all([
+          axiosInstance.get(`/courses/${slug}/lessons/${lessonSlug}/`),
+          axiosInstance.get(`/courses/${slug}/`)
+        ]);
+
+        setLesson(lessonRes.data);
+        setCourseLessons(courseRes.data.lessons || []);
+
+        if (lessonRes.data.file && isVideo(lessonRes.data.file)) {
+          setActiveVideoUrl(lessonRes.data.file);
         }
       } catch (err: any) {
         if (err.response?.status === 403) {
@@ -70,7 +97,7 @@ export default function LessonDetail() {
       }
     };
 
-    fetchLesson();
+    fetchLessonData();
   }, [slug, lessonSlug]);
 
   useEffect(() => {
@@ -100,6 +127,8 @@ export default function LessonDetail() {
       </div>
     );
   }
+
+  const { previous, next } = getPreviousAndNextLesson();
 
   return (
     <div className="py-8 max-w-4xl mx-auto w-full px-4 overflow-x-hidden">
@@ -210,6 +239,49 @@ export default function LessonDetail() {
               </div>
             </div>
           )}
+
+          {/* Lesson Navigation */}
+          <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
+            <div className="flex flex-col sm:flex-row gap-4 justify-between">
+              {previous ? (
+                <Link
+                  href={`/courses/${slug}/lessons/${previous.slug}`}
+                  className="flex items-center gap-3 px-6 py-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-100 dark:border-slate-700 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                    <ChevronLeft size={20} />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-1">Previous Lesson</p>
+                    <p className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">
+                      {previous.title}
+                    </p>
+                  </div>
+                </Link>
+              ) : (
+                <div /> // Spacer for layout balance
+              )}
+
+              {next ? (
+                <Link
+                  href={`/courses/${slug}/lessons/${next.slug}`}
+                  className="flex items-center gap-3 px-6 py-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all group sm:ml-auto"
+                >
+                  <div className="text-right">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-1">Next Lesson</p>
+                    <p className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">
+                      {next.title}
+                    </p>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-100 dark:border-slate-700 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                    <ChevronRight size={20} />
+                  </div>
+                </Link>
+              ) : (
+                <div /> // Spacer for layout balance
+              )}
+            </div>
+          </div>
         </div>
       </article>
     </div>
