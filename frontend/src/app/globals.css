@@ -406,8 +406,8 @@
 
 /* Graceful text wrapping for prose on mobile */
 .prose {
-  overflow-wrap: break-word;
-  word-break: normal;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
   min-width: 0;
 }
 
@@ -416,8 +416,10 @@
 .prose h1,
 .prose h2,
 .prose h3,
-.prose h4 {
-  overflow-wrap: break-word;
+.prose h4,
+.prose span {
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
 }
 
 .prose pre {
