@@ -3,16 +3,6 @@
 @tailwind utilities;
 
 /* ============================================================
-   GLOBAL HYPHENATION DISABLE
-   ============================================================ */
-* {
-  hyphens: none !important;
-  -webkit-hyphens: none !important;
-  -moz-hyphens: none !important;
-  -ms-hyphens: none !important;
-}
-
-/* ============================================================
    DESIGN TOKENS
    ============================================================ */
 @layer base {
@@ -418,10 +408,6 @@
 .prose {
   overflow-wrap: break-word !important;
   word-break: normal !important;
-  hyphens: none !important;
-  -webkit-hyphens: none !important;
-  -moz-hyphens: none !important;
-  -ms-hyphens: none !important;
   min-width: 0;
 }
 
@@ -443,10 +429,6 @@
 .prose th {
   overflow-wrap: break-word !important;
   word-break: normal !important;
-  hyphens: none !important;
-  -webkit-hyphens: none !important;
-  -moz-hyphens: none !important;
-  -ms-hyphens: none !important;
 }
 
 .prose pre {
