@@ -368,15 +368,15 @@
   /* Button styles */
   .btn-primary {
     @apply inline-flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold text-white;
-    @apply bg-indigo-600 hover:bg-indigo-700 transition-all duration-200;
-    @apply shadow-lg shadow-indigo-600/25 hover:-translate-y-0.5 active:scale-[0.98];
+    @apply bg-indigo-700 hover:bg-indigo-800 transition-all duration-200;
+    @apply shadow-xl shadow-indigo-700/30 hover:-translate-y-0.5 active:scale-[0.98];
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold;
-    @apply bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200;
+    @apply inline-flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-medium;
+    @apply bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300;
     @apply border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600;
-    @apply transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98];
+    @apply transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98];
   }
 
   /* Input base */

@@ -47,7 +47,7 @@ export default function Home() {
   const { user } = useAuth();
 
   return (
-    <div className="flex flex-col gap-12 sm:gap-20 overflow-hidden">
+    <div className="flex flex-col gap-16 sm:gap-24 overflow-hidden">
       {/* ─────────────────────── HERO ─────────────────────── */}
       <section className="relative overflow-hidden">
         {/* Background blobs */}
@@ -66,9 +66,9 @@ export default function Home() {
           />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-6xl py-10 sm:py-16 lg:py-24">
-          <div className="surface-panel px-4 py-8 sm:px-10 sm:py-14 lg:px-14 lg:py-16 text-center">
-            <div className="mx-auto max-w-4xl space-y-8">
+        <div className="relative z-10 mx-auto max-w-6xl py-12 sm:py-16 lg:py-24 px-4">
+          <div className="surface-panel px-6 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16 text-center">
+            <div className="mx-auto max-w-4xl space-y-6 sm:space-y-8">
               {/* Badge */}
               <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/70 bg-indigo-50/80 px-4 py-2 text-sm font-semibold text-indigo-700 backdrop-blur-sm dark:border-indigo-800/60 dark:bg-indigo-950/55 dark:text-indigo-300">
                 <span className="relative flex h-2 w-2">
@@ -79,24 +79,24 @@ export default function Home() {
               </div>
 
               {/* Headline */}
-              <h1 className="text-4xl font-black leading-[1.02] tracking-tight text-slate-950 dark:text-white sm:text-5xl lg:text-7xl">
+              <h1 className="text-4xl font-black leading-[1.02] tracking-tight text-slate-900 dark:text-white sm:text-5xl lg:text-7xl">
                 Where ambition{" "}
                 <span className="gradient-text">meets education.</span>
               </h1>
 
               {/* Subheadline */}
-              <p className="mx-auto max-w-3xl text-base font-medium leading-relaxed text-slate-500 dark:text-slate-400 sm:text-xl lg:text-2xl">
+              <p className="mx-auto max-w-3xl text-base font-medium leading-relaxed text-slate-600 dark:text-slate-300 sm:text-xl lg:text-2xl">
                 Studico is a community-driven platform where knowledge is shared
                 openly. Discover new skills or create your own courses without
                 friction.
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-col justify-center gap-4 sm:flex-row">
+              <div className="flex flex-col justify-center gap-4 sm:flex-row sm:gap-5 pt-4">
                 <Link
                   href="/courses"
                   id="hero-explore-btn"
-                  className="group btn-primary gap-2 rounded-2xl px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg shadow-xl shadow-indigo-600/30"
+                  className="group btn-primary gap-2 rounded-2xl px-8 py-4 sm:px-10 sm:py-4.5 text-base sm:text-lg font-bold shadow-2xl shadow-indigo-700/40 hover:shadow-indigo-700/50 w-full sm:w-auto"
                 >
                   Explore Courses
                   <ArrowRight
@@ -108,15 +108,15 @@ export default function Home() {
                   <Link
                     href="/auth/register"
                     id="hero-join-btn"
-                    className="btn-secondary rounded-2xl px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg"
+                    className="btn-secondary rounded-2xl px-8 py-4 sm:px-10 sm:py-4.5 text-base sm:text-lg w-full sm:w-auto"
                   >
-                    Join Now
+                    Join Now — It's Free
                   </Link>
                 ) : (
                   <Link
                     href="/profile"
                     id="hero-profile-btn"
-                    className="btn-secondary rounded-2xl px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg"
+                    className="btn-secondary rounded-2xl px-8 py-4 sm:px-10 sm:py-4.5 text-base sm:text-lg w-full sm:w-auto"
                   >
                     My Dashboard
                   </Link>
@@ -132,14 +132,14 @@ export default function Home() {
       </section>
 
       {/* ─────────────────────── FEATURES ─────────────────────── */}
-      <section className="relative">
+      <section className="relative px-4">
         <div className="max-w-7xl mx-auto">
           {/* Section header */}
-          <div className="mb-14 space-y-4 text-center">
+          <div className="mb-12 space-y-4 text-center">
             <span className="page-eyebrow">
               Why Studico?
             </span>
-            <h2 className="text-4xl font-black tracking-tight text-slate-950 dark:text-white sm:text-5xl">
+            <h2 className="text-4xl font-black tracking-tight text-slate-900 dark:text-white sm:text-5xl">
               Everything you need to{" "}
               <span className="gradient-text-static">learn & grow</span>
             </h2>
@@ -164,10 +164,10 @@ export default function Home() {
                   <f.icon size={26} className="text-white" />
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
+                <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">
                   {f.title}
                 </h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
                   {f.description}
                 </p>
 
@@ -182,47 +182,51 @@ export default function Home() {
       </section>
 
       {/* ─────────────────────── CTA BANNER ─────────────────────── */}
-      <section className="relative overflow-hidden">
-        {/* Gradient background */}
-        <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800">
-          <div className="absolute inset-0 opacity-20"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
-              backgroundSize: "32px 32px",
-            }}
-          />
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-pink-500/20 rounded-full blur-2xl" />
-        </div>
+      <section className="relative overflow-hidden px-4">
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <div className="relative rounded-[1.25rem] sm:rounded-[2.25rem] overflow-hidden">
+            {/* Gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800">
+              <div className="absolute inset-0 opacity-20"
+                style={{
+                  backgroundImage:
+                    "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
+                  backgroundSize: "32px 32px",
+                }}
+              />
+              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-pink-500/20 rounded-full blur-2xl" />
+            </div>
 
-        <div className="relative z-10 mx-auto max-w-4xl rounded-[1.25rem] sm:rounded-[2.25rem] px-5 py-12 sm:py-20 text-center sm:px-10">
-          <h2 className="text-3xl font-black leading-tight text-white sm:text-5xl">
-            Ready to start your{" "}
-            <span className="text-indigo-200">learning journey?</span>
-          </h2>
-          <p className="mx-auto max-w-2xl text-base sm:text-xl text-indigo-200">
-            Join thousands of learners and educators on Studico and get
-            started right away.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href={user ? "/courses" : "/auth/register"}
-              id="cta-main-btn"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 sm:px-10 sm:py-4 bg-white text-indigo-700 font-black rounded-2xl hover:bg-indigo-50 transition-all shadow-2xl shadow-black/20 hover:-translate-y-0.5 text-base sm:text-lg active:scale-[0.98]"
-            >
-              {user ? "Go to Courses" : "Get Started"}
-              <ArrowRight size={20} />
-            </Link>
-            {!user && (
-              <Link
-                href="/auth/login"
-              id="cta-login-btn"
-              className="inline-flex items-center justify-center px-7 py-3.5 sm:px-10 sm:py-4 border-2 border-white/30 text-white font-bold rounded-2xl hover:border-white/60 hover:bg-white/10 transition-all text-base sm:text-lg"
-              >
-                Sign In
-              </Link>
-            )}
+            <div className="relative z-10 px-5 py-12 sm:py-20 text-center sm:px-10">
+              <h2 className="text-3xl font-black leading-tight text-white sm:text-5xl">
+                Ready to start your{" "}
+                <span className="text-indigo-100">learning journey?</span>
+              </h2>
+              <p className="mx-auto max-w-2xl text-base sm:text-xl text-indigo-100">
+                Join thousands of learners and educators on Studico and get
+                started right away.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href={user ? "/courses" : "/auth/register"}
+                  id="cta-main-btn"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 sm:px-10 sm:py-4.5 bg-white text-indigo-700 font-black rounded-2xl hover:bg-indigo-50 transition-all shadow-2xl shadow-black/20 hover:-translate-y-0.5 text-base sm:text-lg active:scale-[0.98] w-full sm:w-auto"
+                >
+                  {user ? "Go to Courses" : "Get Started — Free"}
+                  <ArrowRight size={20} />
+                </Link>
+                {!user && (
+                  <Link
+                    href="/auth/login"
+                  id="cta-login-btn"
+                  className="inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-4.5 border-2 border-white/40 text-white font-medium rounded-2xl hover:border-white/70 hover:bg-white/10 transition-all text-base sm:text-lg w-full sm:w-auto"
+                  >
+                    Sign In
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </section>
