@@ -3,6 +3,16 @@
 @tailwind utilities;
 
 /* ============================================================
+   GLOBAL HYPHENATION DISABLE
+   ============================================================ */
+* {
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+  -moz-hyphens: none !important;
+  -ms-hyphens: none !important;
+}
+
+/* ============================================================
    DESIGN TOKENS
    ============================================================ */
 @layer base {
@@ -37,10 +47,6 @@
 
   * {
     box-sizing: border-box;
-    hyphens: none;
-    -webkit-hyphens: none;
-    -moz-hyphens: none;
-    -ms-hyphens: none;
   }
 
   html {
@@ -49,10 +55,6 @@
       radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), transparent 34%),
       radial-gradient(circle at top right, rgba(168, 85, 247, 0.14), transparent 28%),
       linear-gradient(180deg, #f8fafc 0%, #eef3f9 100%);
-    hyphens: none;
-    -webkit-hyphens: none;
-    -moz-hyphens: none;
-    -ms-hyphens: none;
   }
 
   body {
@@ -67,10 +69,6 @@
     transition: background-color 0.4s ease, color 0.4s ease;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    hyphens: none;
-    -webkit-hyphens: none;
-    -moz-hyphens: none;
-    -ms-hyphens: none;
   }
 
   .dark body {
