@@ -6,8 +6,9 @@
    GLOBAL WORD BREAK PREVENTION
    ============================================================ */
 * {
-  word-break: break-word !important;
-  overflow-wrap: break-word !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  white-space: normal !important;
   hyphens: none !important;
   -webkit-hyphens: none !important;
   -moz-hyphens: none !important;
@@ -419,8 +420,9 @@
 /* Graceful text wrapping for prose on mobile */
 .prose {
   overflow-wrap: break-word !important;
-  word-break: break-word !important;
+  word-break: keep-all !important;
   min-width: 0;
+  overflow-x: auto !important;
 }
 
 .prose p,
@@ -440,7 +442,7 @@
 .prose td,
 .prose th {
   overflow-wrap: break-word !important;
-  word-break: break-word !important;
+  word-break: keep-all !important;
 }
 
 .prose pre {
