@@ -73,13 +73,16 @@
     width: 6px;
     height: 6px;
   }
+
   ::-webkit-scrollbar-track {
     background: transparent;
   }
+
   ::-webkit-scrollbar-thumb {
     background: #6366f1;
     border-radius: 99px;
   }
+
   ::-webkit-scrollbar-thumb:hover {
     background: #4f46e5;
   }
@@ -94,64 +97,143 @@
    KEYFRAME ANIMATIONS
    ============================================================ */
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33%       { transform: translateY(-18px) rotate(1deg); }
-  66%       { transform: translateY(-8px) rotate(-1deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  33% {
+    transform: translateY(-18px) rotate(1deg);
+  }
+
+  66% {
+    transform: translateY(-8px) rotate(-1deg);
+  }
 }
 
 @keyframes float-delayed {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33%       { transform: translateY(-12px) rotate(-1deg); }
-  66%       { transform: translateY(-22px) rotate(1deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  33% {
+    transform: translateY(-12px) rotate(-1deg);
+  }
+
+  66% {
+    transform: translateY(-22px) rotate(1deg);
+  }
 }
 
 @keyframes gradient-shift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes shimmer {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes pulse-ring {
-  0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
-  70%  { transform: scale(1);    box-shadow: 0 0 0 12px rgba(99, 102, 241, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 12px rgba(99, 102, 241, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(32px); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.92); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes blob {
-  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-  50%       { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+
+  0%,
+  100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+
+  50% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
 }
 
 /* ============================================================
    UTILITY CLASSES
    ============================================================ */
 @layer utilities {
-  .text-balance { text-wrap: balance; }
+  .text-balance {
+    text-wrap: balance;
+  }
 
   /* Gradient text */
   .gradient-text {
@@ -169,7 +251,7 @@
   }
 
   .surface-panel {
-    @apply rounded-[1.25rem] sm:rounded-[2rem] border border-white/60 dark:border-slate-800/70 bg-white/80 dark:bg-slate-950/65 shadow-[0_20px_60px_-30px_rgba(15,23,42,0.45)] backdrop-blur-2xl;
+    @apply rounded-[1.25rem] sm:rounded-[2rem] border border-white/60 dark:border-slate-800/70 bg-white/80 dark:bg-slate-950/65 shadow-[0_20px_60px_-30px_#0f172a73] backdrop-blur-2xl;
   }
 
   .surface-panel-soft {
@@ -189,12 +271,29 @@
   }
 
   /* Animation utilities */
-  .animate-float         { animation: float 6s ease-in-out infinite; }
-  .animate-float-delayed { animation: float-delayed 8s ease-in-out infinite; }
-  .animate-fade-up       { animation: fade-up 0.6s ease forwards; }
-  .animate-scale-in      { animation: scale-in 0.4s ease forwards; }
-  .animate-blob          { animation: blob 8s ease-in-out infinite; }
-  .animate-spin-slow     { animation: spin-slow 20s linear infinite; }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-float-delayed {
+    animation: float-delayed 8s ease-in-out infinite;
+  }
+
+  .animate-fade-up {
+    animation: fade-up 0.6s ease forwards;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.4s ease forwards;
+  }
+
+  .animate-blob {
+    animation: blob 8s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+  }
 
   /* Shimmer skeleton */
   .shimmer {
@@ -202,12 +301,16 @@
     overflow: hidden;
     background: #e2e8f0;
   }
-  .dark .shimmer { background: #1e293b; }
+
+  .dark .shimmer {
+    background: #1e293b;
+  }
+
   .shimmer::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%);
     animation: shimmer 1.5s infinite;
   }
 
@@ -218,25 +321,36 @@
     background: rgba(255, 255, 255, 0.75);
     border: 1px solid rgba(255, 255, 255, 0.3);
   }
+
   .dark .glass {
     background: rgba(15, 23, 42, 0.75);
     border: 1px solid rgba(99, 102, 241, 0.1);
   }
 
   /* Glow effects */
-  .glow-indigo { box-shadow: 0 0 40px rgba(99, 102, 241, 0.35); }
-  .glow-purple { box-shadow: 0 0 40px rgba(168, 85, 247, 0.35); }
-  .hover-glow:hover { box-shadow: 0 0 30px rgba(99, 102, 241, 0.4); }
+  .glow-indigo {
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.35);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.35);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+  }
 
   /* Card styles */
   .card-premium {
     @apply bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
+
   .card-premium:hover {
     transform: translateY(-4px);
     box-shadow: 0 20px 60px rgba(99, 102, 241, 0.12);
   }
+
   .dark .card-premium:hover {
     box-shadow: 0 20px 60px rgba(99, 102, 241, 0.08);
   }
@@ -247,6 +361,7 @@
     @apply bg-indigo-600 hover:bg-indigo-700 transition-all duration-200;
     @apply shadow-lg shadow-indigo-600/25 hover:-translate-y-0.5 active:scale-[0.98];
   }
+
   .btn-secondary {
     @apply inline-flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold;
     @apply bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200;
@@ -264,16 +379,47 @@
   }
 
   /* Staggered animation delays */
-  .delay-100 { animation-delay: 0.1s; }
-  .delay-200 { animation-delay: 0.2s; }
-  .delay-300 { animation-delay: 0.3s; }
-  .delay-400 { animation-delay: 0.4s; }
-  .delay-500 { animation-delay: 0.5s; }
+  .delay-100 {
+    animation-delay: 0.1s;
+  }
+
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  .delay-400 {
+    animation-delay: 0.4s;
+  }
+
+  .delay-500 {
+    animation-delay: 0.5s;
+  }
 }
 
 /* ============================================================
    PROSE / CODE BLOCK STYLING
    ============================================================ */
+
+/* Graceful text wrapping for prose on mobile */
+.prose {
+  overflow-wrap: break-word;
+  word-break: normal;
+  min-width: 0;
+}
+
+.prose p,
+.prose li,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  overflow-wrap: break-word;
+}
+
 .prose pre {
   background-color: #0d1117 !important;
   border-radius: 1.5rem !important;
@@ -282,7 +428,9 @@
   border: 1px solid #30363d !important;
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3) !important;
   position: relative;
-  overflow: hidden;
+  max-width: 100%;
+  overflow-x: auto;
+  /* Allow code blocks to scroll horizontally */
 }
 
 /* Terminal window dots */
