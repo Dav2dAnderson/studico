@@ -86,6 +86,7 @@ export default function ManageCourse() {
         router.push("/courses");
       }
     } catch (err: any) {
+      console.error("Failed to fetch course data:", err);
       setError("Failed to load course management data.");
     } finally {
       setLoading(false);
@@ -131,8 +132,12 @@ export default function ManageCourse() {
       });
       setNewLesson({ title: "", content: "", file: null });
       setShowAddForm(false);
-      fetchData();
+      // Fetch data in background without blocking
+      fetchData().catch(err => {
+        console.error("Failed to refresh data after adding lesson:", err);
+      });
     } catch (err: any) {
+      console.error("Failed to add lesson:", err);
       alert("Failed to add lesson.");
     } finally {
       setIsSubmitting(false);
@@ -143,8 +148,12 @@ export default function ManageCourse() {
     if (!confirm("Are you sure you want to delete this lesson?")) return;
     try {
       await axiosInstance.delete(`/courses/${slug}/lessons/${lessonSlug}/`);
-      fetchData();
+      // Fetch data in background without blocking
+      fetchData().catch(err => {
+        console.error("Failed to refresh data after deleting lesson:", err);
+      });
     } catch (err: any) {
+      console.error("Failed to delete lesson:", err);
       alert("Failed to delete lesson.");
     }
   };
@@ -169,8 +178,12 @@ export default function ManageCourse() {
         headers: { "Content-Type": "multipart/form-data" }
       });
       setEditingLessonId(null);
-      fetchData();
+      // Fetch data in background without blocking
+      fetchData().catch(err => {
+        console.error("Failed to refresh data after update:", err);
+      });
     } catch (err: any) {
+      console.error("Failed to update lesson:", err);
       alert("Failed to update lesson.");
     } finally {
       setIsSubmitting(false);
