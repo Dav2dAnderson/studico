@@ -67,6 +67,19 @@ export default function LessonDetail() {
     return { previous, next };
   };
 
+  const sanitizeContent = (html: string) => {
+    console.log('Raw HTML content:', html);
+    const sanitized = html
+      .replace(/\u00AD/g, '')   // soft hyphen
+      .replace(/\u200B/g, '')   // zero-width space
+      .replace(/\u200C/g, '')   // zero-width non-joiner
+      .replace(/\u200D/g, '')   // zero-width joiner
+      .replace(/&shy;/g, '')    // HTML soft hyphen
+      .replace(/\n/g, ' ');     // replace newlines with spaces
+    console.log('Sanitized HTML content:', sanitized);
+    return sanitized;
+  };
+
   useEffect(() => {
     if (!slug || !lessonSlug) return;
 
@@ -174,7 +187,7 @@ export default function LessonDetail() {
           <div
             className="prose sm:prose-lg prose-indigo dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 mb-12 min-w-0 [&_*]:break-normal"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(lesson.content || '<p class="italic text-slate-400">This lesson has no content yet.</p>')
+              __html: DOMPurify.sanitize(sanitizeContent(lesson.content || '<p class="italic text-slate-400">This lesson has no content yet.</p>'))
             }}
           />
 

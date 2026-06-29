@@ -6,7 +6,7 @@
    GLOBAL WORD BREAK PREVENTION
    ============================================================ */
 * {
-  word-break: keep-all !important;
+  word-break: normal !important;
   overflow-wrap: anywhere !important;
   white-space: normal !important;
   hyphens: none !important;
@@ -422,7 +422,7 @@
   max-width: 100% !important;
   overflow: hidden !important;
   overflow-wrap: break-word !important;
-  word-break: keep-all !important;
+  word-break: normal !important;
   min-width: 0;
   overflow-x: auto !important;
 }
@@ -444,7 +444,7 @@
 .prose td,
 .prose th {
   overflow-wrap: break-word !important;
-  word-break: keep-all !important;
+  word-break: normal !important;
 }
 
 .prose pre {
