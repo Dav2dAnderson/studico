@@ -70,45 +70,19 @@ export default function LessonDetail() {
   const sanitizeContent = (html: string) => {
     console.log('Raw HTML content:', html);
     
-    // Log character codes for debugging
-    const charCodes = html.split('').map(char => `${char} (${char.charCodeAt(0)})`).join(', ');
-    console.log('Character codes:', charCodes);
-    
     const sanitized = html
-      .replace(/\u00AD/g, '')   // soft hyphen
-      .replace(/\u200B/g, '')   // zero-width space
-      .replace(/\u200C/g, '')   // zero-width non-joiner
-      .replace(/\u200D/g, '')   // zero-width joiner
-      .replace(/\u2060/g, '')   // word joiner
-      .replace(/\uFEFF/g, '')   // zero-width no-break space (BOM)
-      .replace(/\u0360/g, '')   // combining double tilde
-      .replace(/\u0361/g, '')   // combining double inverted breve
-      .replace(/\u0362/g, '')   // combining double below
-      .replace(/\u0363/g, '')   // combining latin small letter a
-      .replace(/\u0364/g, '')   // combining latin small letter e
-      .replace(/\u0365/g, '')   // combining latin small letter i
-      .replace(/\u0366/g, '')   // combining latin small letter o
-      .replace(/\u0367/g, '')   // combining latin small letter u
-      .replace(/\u0368/g, '')   // combining latin small letter c
-      .replace(/\u0369/g, '')   // combining latin small letter d
-      .replace(/\u036A/g, '')   // combining latin small letter h
-      .replace(/\u036B/g, '')   // combining latin small letter m
-      .replace(/\u036C/g, '')   // combining latin small letter r
-      .replace(/\u036D/g, '')   // combining latin small letter t
-      .replace(/\u036E/g, '')   // combining latin small letter f
-      .replace(/\u036F/g, '')   // combining latin small letter s
-      .replace(/\u0483/g, '')   // combining cyrillic titlo
-      .replace(/\u0484/g, '')   // combining cyrillic palatalization
-      .replace(/\u0485/g, '')   // combining cyrillic dasse pneumata
-      .replace(/\u0486/g, '')   // combining cyrillic psili pneumata
-      .replace(/\u0487/g, '')   // combining cyrillic pokrytie
-      .replace(/&shy;/g, '')    // HTML soft hyphen
-      .replace(/&zwj;/g, '')    // HTML zero-width joiner
-      .replace(/&zwnj;/g, '')   // HTML zero-width non-joiner
-      .replace(/\n/g, ' ')      // replace newlines with spaces
-      .replace(/\r/g, ' ')      // replace carriage returns with spaces
-      .replace(/\t/g, ' ')      // replace tabs with spaces
-      .replace(/\s+/g, ' ')     // replace multiple spaces with single space
+      .replace(/&nbsp;/g, ' ')     // Replace non-breaking spaces with regular spaces - THIS IS THE KEY FIX
+      .replace(/\u00A0/g, ' ')     // Replace non-breaking space character with regular space
+      .replace(/\u00AD/g, '')      // soft hyphen
+      .replace(/\u200B/g, '')      // zero-width space
+      .replace(/\u200C/g, '')      // zero-width non-joiner
+      .replace(/\u200D/g, '')      // zero-width joiner
+      .replace(/\u2060/g, '')      // word joiner
+      .replace(/\uFEFF/g, '')      // zero-width no-break space (BOM)
+      .replace(/&shy;/g, '')      // HTML soft hyphen
+      .replace(/&zwj;/g, '')      // HTML zero-width joiner
+      .replace(/&zwnj;/g, '')     // HTML zero-width non-joiner
+      .replace(/\s+/g, ' ')        // replace multiple spaces with single space
       .trim();
     
     console.log('Sanitized HTML content:', sanitized);

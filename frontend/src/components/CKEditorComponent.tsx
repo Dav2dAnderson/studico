@@ -11,6 +11,15 @@ interface CKEditorComponentProps {
 }
 
 const CKEditorComponent: React.FC<CKEditorComponentProps> = ({ value, onChange, placeholder }) => {
+    const handleChange = (event: any, editor: any) => {
+        const data = editor.getData();
+        // Sanitize content to prevent &nbsp; insertion
+        const sanitized = data
+            .replace(/&nbsp;/g, ' ')
+            .replace(/\u00A0/g, ' ');
+        onChange(sanitized);
+    };
+
     return (
         <div className="prose-none ck-editor-wrapper">
             <CKEditor
@@ -25,10 +34,7 @@ const CKEditorComponent: React.FC<CKEditorComponentProps> = ({ value, onChange, 
                         'undo', 'redo'
                     ]
                 }}
-                onChange={(event, editor) => {
-                    const data = editor.getData();
-                    onChange(data);
-                }}
+                onChange={handleChange}
             />
             <style jsx global>{`
                 .ck-editor__editable_inline {

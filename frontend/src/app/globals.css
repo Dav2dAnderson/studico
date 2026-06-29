@@ -7,7 +7,7 @@
    ============================================================ */
 * {
   word-break: normal !important;
-  overflow-wrap: anywhere !important;
+  overflow-wrap: break-word !important;
   white-space: normal !important;
   hyphens: none !important;
   -webkit-hyphens: none !important;
@@ -420,7 +420,6 @@
 /* Graceful text wrapping for prose on mobile */
 .prose {
   max-width: 100% !important;
-  overflow: hidden !important;
   overflow-wrap: break-word !important;
   word-break: normal !important;
   min-width: 0;

@@ -20,6 +20,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
             ['link'],
             ['clean']
         ],
+        clipboard: {
+            matchVisual: false,
+        },
     };
 
     const formats = [
@@ -30,12 +33,20 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
         'link'
     ];
 
+    const handleChange = (content: string) => {
+        // Sanitize content to prevent &nbsp; insertion
+        const sanitized = content
+            .replace(/&nbsp;/g, ' ')
+            .replace(/\u00A0/g, ' ');
+        onChange(sanitized);
+    };
+
     return (
         <div className="rich-text-editor">
             <ReactQuill 
                 theme="snow"
                 value={value}
-                onChange={onChange}
+                onChange={handleChange}
                 modules={modules}
                 formats={formats}
                 placeholder={placeholder || 'Write something amazing...'}
