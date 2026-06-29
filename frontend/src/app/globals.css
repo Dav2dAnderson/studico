@@ -16,21 +16,54 @@
 }
 
 /* ============================================================
+   CONTRAST IMPROVEMENTS
+   ============================================================ */
+/* Improve contrast for low-contrast text colors */
+.text-slate-400 {
+  color: #475569 !important;
+}
+.dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+.text-slate-500 {
+  color: #334155 !important;
+}
+.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+.text-slate-600 {
+  color: #1e293b !important;
+}
+.dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+/* Improve placeholder contrast */
+::placeholder {
+  color: #475569 !important;
+}
+.dark ::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ============================================================
    DESIGN TOKENS
    ============================================================ */
 @layer base {
   :root {
-    --background: #f4f7fb;
-    --foreground: #0f172a;
+    --background: #f8fafc;
+    --foreground: #1e293b;
     --card: #ffffff;
-    --card-foreground: #0f172a;
-    --border: #dbe4f0;
+    --card-foreground: #1e293b;
+    --border: #e2e8f0;
     --primary: #4f46e5;
     --primary-foreground: #ffffff;
-    --muted: #64748b;
-    --muted-foreground: #94a3b8;
-    --surface: rgba(255, 255, 255, 0.72);
-    --surface-border: rgba(148, 163, 184, 0.18);
+    --muted: #475569;
+    --muted-foreground: #64748b;
+    --surface: rgba(255, 255, 255, 0.85);
+    --surface-border: rgba(148, 163, 184, 0.2);
     --radius: 1rem;
   }
 
@@ -42,8 +75,8 @@
     --border: #1c2740;
     --primary: #6366f1;
     --primary-foreground: #ffffff;
-    --muted: #94a3b8;
-    --muted-foreground: #475569;
+    --muted: #cbd5e1;
+    --muted-foreground: #94a3b8;
     --surface: rgba(15, 23, 42, 0.72);
     --surface-border: rgba(99, 102, 241, 0.14);
   }
@@ -55,17 +88,17 @@
   html {
     scroll-behavior: smooth;
     background:
-      radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), transparent 34%),
-      radial-gradient(circle at top right, rgba(168, 85, 247, 0.14), transparent 28%),
-      linear-gradient(180deg, #f8fafc 0%, #eef3f9 100%);
+      radial-gradient(circle at top left, rgba(99, 102, 241, 0.06), transparent 34%),
+      radial-gradient(circle at top right, rgba(168, 85, 247, 0.04), transparent 28%),
+      linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
   }
 
   body {
     background-color: var(--background);
     background-image:
-      radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.08), transparent 26%),
-      radial-gradient(circle at 85% 10%, rgba(168, 85, 247, 0.07), transparent 22%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(244, 247, 251, 1));
+      radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.04), transparent 26%),
+      radial-gradient(circle at 85% 10%, rgba(168, 85, 247, 0.03), transparent 22%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(248, 250, 252, 1));
     color: var(--foreground);
     min-height: 100vh;
     overflow-x: hidden;
@@ -280,7 +313,7 @@
   }
 
   .page-subtitle {
-    @apply text-sm sm:text-base lg:text-lg leading-relaxed text-slate-500 dark:text-slate-400;
+    @apply text-sm sm:text-base lg:text-lg leading-relaxed text-slate-600 dark:text-slate-300;
   }
 
   /* Animation utilities */
@@ -377,7 +410,7 @@
 
   .btn-secondary {
     @apply inline-flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-medium;
-    @apply bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300;
+    @apply bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200;
     @apply border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600;
     @apply transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98];
   }
@@ -386,7 +419,7 @@
   .input-base {
     @apply w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-2xl border border-slate-200/80 dark:border-slate-700/80;
     @apply bg-white/80 dark:bg-slate-950/60 text-slate-900 dark:text-slate-100 text-sm sm:text-base;
-    @apply placeholder-slate-400 dark:placeholder-slate-600;
+    @apply placeholder-slate-500 dark:placeholder-slate-400;
     @apply focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500;
     @apply transition-all duration-200 shadow-sm shadow-slate-900/5;
   }
@@ -426,6 +459,14 @@
   overflow-x: auto !important;
 }
 
+/* Improve prose content contrast */
+.prose {
+  color: #1e293b !important;
+}
+.dark .prose {
+  color: #e2e8f0 !important;
+}
+
 .prose p,
 .prose li,
 .prose h1,
@@ -444,6 +485,33 @@
 .prose th {
   overflow-wrap: break-word !important;
   word-break: normal !important;
+}
+
+/* Improve specific prose element contrast */
+.prose p,
+.prose li,
+.prose span,
+.prose div {
+  color: #1e293b !important;
+}
+.dark .prose p,
+.dark .prose li,
+.dark .prose span,
+.dark .prose div {
+  color: #cbd5e1 !important;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: #0f172a !important;
+}
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4 {
+  color: #f1f5f9 !important;
 }
 
 .prose pre {

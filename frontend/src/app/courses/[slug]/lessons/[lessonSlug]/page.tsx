@@ -157,11 +157,11 @@ export default function LessonDetail() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
         <Link
           href={`/courses/${slug}`}
-          className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium"
+          className="inline-flex items-center text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium"
         >
           <ArrowLeft size={20} className="mr-2" /> Back to Curriculum
         </Link>
-        <div className="text-sm text-slate-400 font-medium flex items-center">
+        <div className="text-sm text-slate-600 dark:text-slate-300 font-medium flex items-center">
           <Clock size={16} className="mr-2" />
           Lesson Published: {new Date(lesson.created_at).toLocaleDateString()}
         </div>
@@ -194,9 +194,9 @@ export default function LessonDetail() {
 
         <div className="p-8 sm:p-12">
           <div
-            className="prose sm:prose-lg prose-indigo dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 mb-12 min-w-0 [&_*]:break-normal"
+            className="prose sm:prose-lg prose-indigo dark:prose-invert max-w-none text-slate-800 dark:text-slate-200 mb-12 min-w-0 [&_*]:break-normal"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(sanitizeContent(lesson.content || '<p class="italic text-slate-400">This lesson has no content yet.</p>'))
+              __html: DOMPurify.sanitize(sanitizeContent(lesson.content || '<p class="italic text-slate-600 dark:text-slate-400">This lesson has no content yet.</p>'))
             }}
           />
 
@@ -222,7 +222,7 @@ export default function LessonDetail() {
                           <p className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
                             {fileName}
                           </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest font-black mt-0.5">
+                          <p className="text-xs text-slate-600 dark:text-slate-300 uppercase tracking-widest font-black mt-0.5">
                             {fileIsVideo ? 'Video Lesson' : 'Resource File'}
                           </p>
                         </div>
@@ -274,7 +274,7 @@ export default function LessonDetail() {
                     <ChevronLeft size={20} />
                   </div>
                   <div className="text-left">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-1">Previous Lesson</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 font-medium mb-1">Previous Lesson</p>
                     <p className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">
                       {previous.title}
                     </p>
@@ -290,7 +290,7 @@ export default function LessonDetail() {
                   className="flex items-center gap-3 px-6 py-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all group sm:ml-auto"
                 >
                   <div className="text-right">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-1">Next Lesson</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 font-medium mb-1">Next Lesson</p>
                     <p className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">
                       {next.title}
                     </p>
