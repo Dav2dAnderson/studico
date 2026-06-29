@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import axiosInstance from "@/lib/axios";
@@ -70,6 +70,7 @@ export default function ManageCourse() {
     content: "", 
     file: null
   });
+  const [isSaving, setIsSaving] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -164,7 +165,7 @@ export default function ManageCourse() {
   };
 
   const handleUpdateLesson = async (lessonSlug: string) => {
-    setIsSubmitting(true);
+    setIsSaving(true);
     
     const formData = new FormData();
     formData.append("title", editFormData.title);
@@ -186,7 +187,7 @@ export default function ManageCourse() {
       console.error("Failed to update lesson:", err);
       alert("Failed to update lesson.");
     } finally {
-      setIsSubmitting(false);
+      setIsSaving(false);
     }
   };
 
@@ -300,7 +301,11 @@ export default function ManageCourse() {
           ) : (
             lessons.map((lesson) => (
               <div key={lesson.id} className="p-6 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                {editingLessonId === lesson.id ? (
+                {editingLessonId === lesson.id && isSaving ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="animate-spin h-8 w-8 text-indigo-600" />
+                  </div>
+                ) : editingLessonId === lesson.id ? (
                   <div className="space-y-4">
                     <input 
                       type="text" 
@@ -324,13 +329,16 @@ export default function ManageCourse() {
                     <div className="flex gap-2">
                       <button 
                         onClick={() => handleUpdateLesson(lesson.slug)}
-                        className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-green-700 transition-colors"
+                        disabled={isSaving}
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <Check size={16} /> Save
+                        {isSaving ? <Loader2 className="animate-spin h-4 w-4" /> : <Check size={16} />} 
+                        {isSaving ? "Saving..." : "Save"}
                       </button>
                       <button 
                         onClick={() => setEditingLessonId(null)}
-                        className="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
+                        disabled={isSaving}
+                        className="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <X size={16} /> Cancel
                       </button>

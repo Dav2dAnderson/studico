@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -11,7 +11,18 @@ interface RichTextEditorProps {
 }
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder }) => {
-    const modules = {
+    const [localValue, setLocalValue] = useState(value);
+    const [isFocused, setIsFocused] = useState(false);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Sync external value changes to local state
+    useEffect(() => {
+        if (!isFocused) {
+            setLocalValue(value);
+        }
+    }, [value, isFocused]);
+
+    const modules = useMemo(() => ({
         toolbar: [
             [{ 'header': [1, 2, 3, false] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
@@ -23,30 +34,64 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
         clipboard: {
             matchVisual: false,
         },
-    };
+    }), []);
 
-    const formats = [
+    const formats = useMemo(() => [
         'header',
         'bold', 'italic', 'underline', 'strike', 'blockquote',
         'list', 'bullet',
         'code', 'code-block',
         'link'
-    ];
+    ], []);
 
-    const handleChange = (content: string) => {
+    const handleChange = useCallback((content: string) => {
         // Sanitize content to prevent &nbsp; insertion
         const sanitized = content
             .replace(/&nbsp;/g, ' ')
             .replace(/\u00A0/g, ' ');
-        onChange(sanitized);
-    };
+        setLocalValue(sanitized);
+        
+        // Debounce the onChange call to prevent excessive updates
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+        
+        timeoutRef.current = setTimeout(() => {
+            onChange(sanitized);
+        }, 300);
+    }, [onChange]);
+
+    const handleFocus = useCallback(() => {
+        setIsFocused(true);
+    }, []);
+
+    const handleBlur = useCallback(() => {
+        setIsFocused(false);
+        setLocalValue(value);
+        // Immediately call onChange on blur to ensure latest value is saved
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+        onChange(localValue);
+    }, [value, localValue, onChange]);
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
 
     return (
         <div className="rich-text-editor">
             <ReactQuill 
                 theme="snow"
-                value={value}
+                value={localValue}
                 onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
                 modules={modules}
                 formats={formats}
                 placeholder={placeholder || 'Write something amazing...'}
@@ -97,4 +142,4 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
     );
 };
 
-export default RichTextEditor;
+export default React.memo(RichTextEditor);
