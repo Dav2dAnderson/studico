@@ -108,8 +108,9 @@ export default function ClassroomPage() {
     try {
       const res = await axiosInstance.get(`/classrooms/${id}/`);
       setClassroom(res.data);
-    } catch (err: any) {
-      if (err.response?.status === 403 || err.response?.status === 404) {
+    } catch (err: unknown) {
+      const error = err as { response?: { status?: number } };
+      if (error.response?.status === 403 || error.response?.status === 404) {
         setError("You don't have access to this classroom.");
       } else {
         setError("Failed to load classroom.");
@@ -176,8 +177,9 @@ export default function ClassroomPage() {
         setInput("");
         inputRef.current?.focus();
       }
-    } catch (err: any) {
-      setSendError(err.response?.data?.detail || "Failed to send message.");
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } } };
+      setSendError(error.response?.data?.detail || "Failed to send message.");
     } finally {
       setSending(false);
     }

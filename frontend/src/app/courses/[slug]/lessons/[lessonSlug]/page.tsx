@@ -7,8 +7,7 @@ import { Loader2, ArrowLeft, BookOpen, Clock, FileUp, PlayCircle, ChevronRight, 
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import hljs from 'highlight.js';
-import 'highlight.js/styles/github-dark.css'; // Premium dark theme for code snippet
-import { useEffect as useIsomorphicLayoutEffect } from 'react';
+import 'highlight.js/styles/github-dark.css';
 
 interface Lesson {
   id: number;
@@ -33,7 +32,6 @@ interface LessonDetail {
 
 export default function LessonDetail() {
   const { slug, lessonSlug } = useParams();
-  const router = useRouter();
   const [lesson, setLesson] = useState<LessonDetail | null>(null);
   const [courseLessons, setCourseLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,8 +66,6 @@ export default function LessonDetail() {
   };
 
   const sanitizeContent = (html: string) => {
-    console.log('Raw HTML content:', html);
-    
     const sanitized = html
       .replace(/&nbsp;/g, ' ')     // Replace non-breaking spaces with regular spaces - THIS IS THE KEY FIX
       .replace(/\u00A0/g, ' ')     // Replace non-breaking space character with regular space
@@ -85,7 +81,6 @@ export default function LessonDetail() {
       .replace(/\s+/g, ' ')        // replace multiple spaces with single space
       .trim();
     
-    console.log('Sanitized HTML content:', sanitized);
     return sanitized;
   };
 
@@ -106,10 +101,11 @@ export default function LessonDetail() {
         if (lessonRes.data.file && isVideo(lessonRes.data.file)) {
           setActiveVideoUrl(lessonRes.data.file);
         }
-      } catch (err: any) {
-        if (err.response?.status === 403) {
+      } catch (err: unknown) {
+        const error = err as { response?: { status?: number } };
+        if (error.response?.status === 403) {
           setError("You must be enrolled in this course to view this lesson.");
-        } else if (err.response?.status === 404) {
+        } else if (error.response?.status === 404) {
           setError("Lesson not found.");
         } else {
           setError("Failed to load lesson content.");

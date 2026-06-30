@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -20,23 +20,13 @@ const CKEditorComponent: React.FC<CKEditorComponentProps> = ({ value, onChange, 
         onChange(sanitized);
     };
 
-    return (
-        <div className="prose-none ck-editor-wrapper">
-            <CKEditor
-                editor={ClassicEditor as any}
-                data={value}
-                config={{
-                    placeholder: placeholder || 'Type your content here...',
-                    toolbar: [
-                        'heading', '|', 
-                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
-                        'code', 'codeBlock', '|',
-                        'undo', 'redo'
-                    ]
-                }}
-                onChange={handleChange}
-            />
-            <style jsx global>{`
+    useEffect(() => {
+        // Inject CKEditor styles dynamically
+        const styleId = 'ckeditor-custom-styles';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
                 .ck-editor__editable_inline {
                     min-height: 300px;
                     border-bottom-left-radius: 0.75rem !important;
@@ -72,7 +62,27 @@ const CKEditorComponent: React.FC<CKEditorComponentProps> = ({ value, onChange, 
                     border-color: rgb(79 70 229) !important;
                     box-shadow: none !important;
                 }
-            `}</style>
+            `;
+            document.head.appendChild(style);
+        }
+    }, []);
+
+    return (
+        <div className="prose-none ck-editor-wrapper">
+            <CKEditor
+                editor={ClassicEditor as any}
+                data={value}
+                config={{
+                    placeholder: placeholder || 'Type your content here...',
+                    toolbar: [
+                        'heading', '|',
+                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                        'code', 'codeBlock', '|',
+                        'undo', 'redo'
+                    ]
+                }}
+                onChange={handleChange}
+            />
         </div>
     );
 };

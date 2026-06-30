@@ -110,7 +110,7 @@ export default function Home() {
                     id="hero-join-btn"
                     className="btn-secondary rounded-2xl px-8 py-4 sm:px-10 sm:py-4.5 text-base sm:text-lg w-full sm:w-auto"
                   >
-                    Join Now — It's Free
+                    Join Now — It&apos;s Free
                   </Link>
                 ) : (
                   <Link

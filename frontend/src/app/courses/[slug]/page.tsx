@@ -76,7 +76,7 @@ export default function CourseDetail() {
       // Refresh course data to get lessons and updated enrollment status
       const res = await axiosInstance.get(`/courses/${slug}/`);
       setCourse(res.data);
-    } catch (err) {
+    } catch (_err) {
       alert("Failed to enroll in course.");
     } finally {
       setEnrolling(false);
@@ -90,7 +90,7 @@ export default function CourseDetail() {
       await axiosInstance.post(`/courses/${slug}/leave/`);
       const res = await axiosInstance.get(`/courses/${slug}/`);
       setCourse(res.data);
-    } catch (err) {
+    } catch (_err) {
       alert("Failed to leave course.");
     } finally {
       setLeaving(false);
@@ -103,7 +103,7 @@ export default function CourseDetail() {
       await axiosInstance.post(`/courses/${slug}/join_classroom/`);
       const res = await axiosInstance.get(`/courses/${slug}/`);
       setCourse(res.data);
-    } catch (err) {
+    } catch (_err) {
       alert("Failed to join classroom.");
     } finally {
       setJoiningClassroom(false);

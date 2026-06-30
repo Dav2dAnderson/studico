@@ -37,10 +37,11 @@ export default function CreateCoursePage() {
         description,
       });
       router.push(`/courses/${res.data.slug}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } }; message?: string };
       setError(
-        err.response?.data?.detail || 
-        err.message ||
+        error.response?.data?.detail || 
+        error.message ||
         "Failed to create course. Please try again."
       );
     } finally {

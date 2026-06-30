@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../lib/axios";
 import { useAuth } from "@/context/AuthContext";
-import { Loader2, FileText, CheckCircle, XCircle, Send } from "lucide-react";
-import Link from "next/link";
+import { Loader2, FileText, CheckCircle, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface Application {
@@ -48,7 +47,7 @@ export default function Applications() {
       // const userApps = res.data.filter((app: any) => app.user.id === user?.id);
       // For now, we trust the API to return the right data or we just show them
       setApplications(res.data);
-    } catch (err) {
+    } catch (_err) {
       console.error("Failed to fetch applications");
     } finally {
       setLoading(false);
@@ -68,7 +67,7 @@ export default function Applications() {
       setSuccess("Your application has been submitted successfully!");
       setContent("");
       fetchApplications();
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to submit application. Please try again.");
     } finally {
       setSubmitting(false);
@@ -157,7 +156,7 @@ export default function Applications() {
               <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500">
                 <FileText size={24} />
               </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400">You haven't submitted any applications yet.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">You haven&apos;t submitted any applications yet.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -178,7 +177,7 @@ export default function Applications() {
                     )}
                   </div>
                   <p className="text-sm text-slate-700 dark:text-slate-300 line-clamp-3 italic bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700/50">
-                    "{app.content}"
+                    &ldquo;{app.content}&rdquo;
                   </p>
                 </div>
               ))}

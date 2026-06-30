@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   Loader2,
   BookOpen,
-  User,
   Search,
   Sparkles,
   ArrowRight,
@@ -54,7 +53,7 @@ export default function Courses() {
         try {
           const res = await axiosInstance.get("/courses/");
           setCourses(res.data);
-        } catch {
+        } catch (_err) {
           setError("Failed to load courses.");
         } finally {
           setLoading(false);

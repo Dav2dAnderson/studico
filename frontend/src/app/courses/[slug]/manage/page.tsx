@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import axiosInstance from "@/lib/axios";
@@ -86,7 +86,7 @@ export default function ManageCourse() {
       if (user && courseRes.data.user.id !== user.id) {
         router.push("/courses");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to fetch course data:", err);
       setError("Failed to load course management data.");
     } finally {
@@ -110,7 +110,7 @@ export default function ManageCourse() {
     try {
       await axiosInstance.delete(`/courses/${slug}/`);
       router.push("/profile");
-    } catch (err) {
+    } catch (_err) {
       alert("Failed to delete course.");
       setIsDeleting(false);
     }
@@ -137,7 +137,7 @@ export default function ManageCourse() {
       fetchData().catch(err => {
         console.error("Failed to refresh data after adding lesson:", err);
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to add lesson:", err);
       alert("Failed to add lesson.");
     } finally {
@@ -153,7 +153,7 @@ export default function ManageCourse() {
       fetchData().catch(err => {
         console.error("Failed to refresh data after deleting lesson:", err);
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to delete lesson:", err);
       alert("Failed to delete lesson.");
     }
@@ -183,7 +183,7 @@ export default function ManageCourse() {
       fetchData().catch(err => {
         console.error("Failed to refresh data after update:", err);
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to update lesson:", err);
       alert("Failed to update lesson.");
     } finally {

@@ -66,9 +66,9 @@ export default function ProfilePage() {
         bio: profileRes.data.bio || "",
         phone_number: profileRes.data.phone_number || "",
         email: profileRes.data.email || "",
-        certificates: profileRes.data.my_certificates?.map((c: any) => c.name) || []
+        certificates: profileRes.data.my_certificates?.map((c: { name: string }) => c.name) || []
       });
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to load profile data.");
     } finally {
       setLoading(false);
@@ -101,8 +101,9 @@ export default function ProfilePage() {
       await axiosInstance.patch("/user_control/me/", editForm);
       await fetchProfile();
       setIsEditModalOpen(false);
-    } catch (err: any) {
-      alert("Failed to update profile: " + JSON.stringify(err.response?.data || err.message));
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: unknown }; message?: string };
+      alert("Failed to update profile: " + JSON.stringify(error.response?.data || error.message));
     } finally {
       setIsUpdating(false);
     }
@@ -209,7 +210,7 @@ export default function ProfilePage() {
               
               {profile.bio && (
                 <p className="mt-4 text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed text-base italic">
-                  "{profile.bio}"
+                  &ldquo;{profile.bio}&rdquo;
                 </p>
               )}
 
@@ -242,7 +243,7 @@ export default function ProfilePage() {
 
               {/* Certificates Display */}
               <div className="flex flex-wrap gap-2 mt-4">
-                {profile.my_certificates?.map((cert: any, idx: number) => (
+                {profile.my_certificates?.map((cert: { name: string }, idx: number) => (
                   <span key={idx} className="flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-amber-700 shadow-sm dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400">
                     <Check size={12} /> {cert.name}
                   </span>

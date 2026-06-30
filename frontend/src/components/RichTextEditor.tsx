@@ -22,6 +22,57 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
         }
     }, [value, isFocused]);
 
+    // Inject Quill styles dynamically
+    useEffect(() => {
+        const styleId = 'quill-custom-styles';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
+                .rich-text-editor .ql-container {
+                    min-height: 250px;
+                    font-size: 1rem;
+                    border-bottom-left-radius: 0.75rem;
+                    border-bottom-right-radius: 0.75rem;
+                    border-color: rgb(226 232 240) !important;
+                }
+                .rich-text-editor .ql-toolbar {
+                    border-top-left-radius: 0.75rem;
+                    border-top-right-radius: 0.75rem;
+                    background-color: rgb(248 250 252);
+                    border-color: rgb(226 232 240) !important;
+                }
+                
+                /* Dark Mode Styles */
+                .dark .rich-text-editor .ql-toolbar {
+                    background-color: rgb(15 23 42);
+                    border-color: rgb(51 65 85) !important;
+                }
+                .dark .rich-text-editor .ql-container {
+                    border-color: rgb(51 65 85) !important;
+                    background-color: rgb(15 23 42);
+                }
+                .dark .ql-stroke {
+                    stroke: rgb(148 163 184) !important;
+                }
+                .dark .ql-fill {
+                    fill: rgb(148 163 184) !important;
+                }
+                .dark .ql-picker {
+                    color: rgb(148 163 184) !important;
+                }
+                .dark .ql-picker-options {
+                    background-color: rgb(30 41 59) !important;
+                    border-color: rgb(71 85 105) !important;
+                }
+                .dark .ql-editor.ql-blank::before {
+                    color: rgb(71 85 105) !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }, []);
+
     const modules = useMemo(() => ({
         toolbar: [
             [{ 'header': [1, 2, 3, false] }],
@@ -97,47 +148,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
                 placeholder={placeholder || 'Write something amazing...'}
                 className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-xl overflow-hidden"
             />
-            <style jsx global>{`
-                .rich-text-editor .ql-container {
-                    min-height: 250px;
-                    font-size: 1rem;
-                    border-bottom-left-radius: 0.75rem;
-                    border-bottom-right-radius: 0.75rem;
-                    border-color: rgb(226 232 240) !important;
-                }
-                .rich-text-editor .ql-toolbar {
-                    border-top-left-radius: 0.75rem;
-                    border-top-right-radius: 0.75rem;
-                    background-color: rgb(248 250 252);
-                    border-color: rgb(226 232 240) !important;
-                }
-                
-                /* Dark Mode Styles */
-                .dark .rich-text-editor .ql-toolbar {
-                    background-color: rgb(15 23 42);
-                    border-color: rgb(51 65 85) !important;
-                }
-                .dark .rich-text-editor .ql-container {
-                    border-color: rgb(51 65 85) !important;
-                    background-color: rgb(15 23 42);
-                }
-                .dark .ql-stroke {
-                    stroke: rgb(148 163 184) !important;
-                }
-                .dark .ql-fill {
-                    fill: rgb(148 163 184) !important;
-                }
-                .dark .ql-picker {
-                    color: rgb(148 163 184) !important;
-                }
-                .dark .ql-picker-options {
-                    background-color: rgb(30 41 59) !important;
-                    border-color: rgb(71 85 105) !important;
-                }
-                .dark .ql-editor.ql-blank::before {
-                    color: rgb(71 85 105) !important;
-                }
-            `}</style>
         </div>
     );
 };

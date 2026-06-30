@@ -54,7 +54,7 @@ axiosInstance.interceptors.response.use(
             return axiosInstance(originalRequest);
           }
         }
-      } catch (refreshError) {
+      } catch (_refreshError) {
         // If refresh token fails, clear local storage and redirect to login
         if (typeof window !== 'undefined') {
           localStorage.removeItem('access');
