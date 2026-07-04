@@ -51,7 +51,7 @@ export default function ManageCourse() {
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [pageError, setPageError] = useState("");
   
   // New lesson form state
   const [showAddForm, setShowAddForm] = useState(false);
@@ -62,6 +62,7 @@ export default function ManageCourse() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [addLessonError, setAddLessonError] = useState("");
 
   // Edit lesson state
   const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
@@ -71,6 +72,9 @@ export default function ManageCourse() {
     file: null
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [editError, setEditError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const fetchData = useCallback(async () => {
     try {
@@ -88,7 +92,7 @@ export default function ManageCourse() {
       }
     } catch (err: unknown) {
       console.error("Failed to fetch course data:", err);
-      setError("Failed to load course management data.");
+      setPageError("Failed to load course management data.");
     } finally {
       setLoading(false);
     }
@@ -119,6 +123,7 @@ export default function ManageCourse() {
   const handleAddLesson = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setAddLessonError("");
     
     const formData = new FormData();
     formData.append("title", newLesson.title);
@@ -139,7 +144,7 @@ export default function ManageCourse() {
       });
     } catch (err: unknown) {
       console.error("Failed to add lesson:", err);
-      alert("Failed to add lesson.");
+      setAddLessonError("Failed to add lesson. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -162,10 +167,15 @@ export default function ManageCourse() {
   const handleStartEdit = (lesson: Lesson) => {
     setEditingLessonId(lesson.id);
     setEditFormData({ title: lesson.title, content: lesson.content, file: null });
+    setHasUnsavedChanges(false);
+    setEditError("");
+    setSuccessMessage("");
   };
 
   const handleUpdateLesson = async (lessonSlug: string) => {
     setIsSaving(true);
+    setEditError("");
+    setSuccessMessage("");
     
     const formData = new FormData();
     formData.append("title", editFormData.title);
@@ -178,17 +188,33 @@ export default function ManageCourse() {
       await axiosInstance.patch(`/courses/${slug}/lessons/${lessonSlug}/`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
+      setSuccessMessage("Lesson updated successfully!");
+      setHasUnsavedChanges(false);
       setEditingLessonId(null);
       // Fetch data in background without blocking
       fetchData().catch(err => {
         console.error("Failed to refresh data after update:", err);
       });
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err: unknown) {
       console.error("Failed to update lesson:", err);
-      alert("Failed to update lesson.");
+      setEditError("Failed to update lesson. Please try again.");
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleCancelEdit = () => {
+    if (hasUnsavedChanges) {
+      if (!confirm("You have unsaved changes. Are you sure you want to cancel?")) {
+        return;
+      }
+    }
+    setEditingLessonId(null);
+    setHasUnsavedChanges(false);
+    setEditError("");
+    setSuccessMessage("");
   };
 
   if (authLoading || loading) {
@@ -199,10 +225,10 @@ export default function ManageCourse() {
     );
   }
 
-  if (error || !course) {
+  if (pageError || !course) {
     return (
       <div className="py-12 text-center">
-        <p className="text-red-600 font-medium">{error}</p>
+        <p className="text-red-600 font-medium">{pageError}</p>
         <Link href="/profile" className="text-indigo-600 hover:underline mt-4 inline-block">
           Back to Profile
         </Link>
@@ -247,6 +273,13 @@ export default function ManageCourse() {
       {showAddForm && (
         <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl p-8 mb-8 animate-in fade-in slide-in-from-top-4 duration-300">
           <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-6">New Lesson</h2>
+          
+          {addLessonError && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm font-medium mb-4">
+              {addLessonError}
+            </div>
+          )}
+          
           <form onSubmit={handleAddLesson} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Title</label>
@@ -302,77 +335,156 @@ export default function ManageCourse() {
             lessons.map((lesson) => (
               <div key={lesson.id} className="p-6 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                 {editingLessonId === lesson.id && isSaving ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="animate-spin h-8 w-8 text-indigo-600" />
+                  <div className="flex items-center justify-center py-12">
+                    <div className="text-center">
+                      <Loader2 className="animate-spin h-10 w-10 text-indigo-600 mx-auto mb-3" />
+                      <p className="text-slate-600 dark:text-slate-400 font-medium">Saving changes...</p>
+                    </div>
                   </div>
                 ) : editingLessonId === lesson.id ? (
-                  <div className="space-y-4">
-                    <input 
-                      type="text" 
-                      value={editFormData.title}
-                      onChange={(e) => setEditFormData({...editFormData, title: e.target.value})}
-                      className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none"
-                    />
-                    <RichTextEditor 
-                      value={editFormData.content}
-                      onChange={(data) => setEditFormData({...editFormData, content: data})}
-                      placeholder="Update lesson content..."
-                    />
+                  <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-200">
+                    {/* Error/Success Messages */}
+                    {editError && (
+                      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm font-medium">
+                        {editError}
+                      </div>
+                    )}
+                    {successMessage && (
+                      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-600 dark:text-green-400 px-4 py-3 rounded-xl text-sm font-medium">
+                        {successMessage}
+                      </div>
+                    )}
+
+                    {/* Title Input */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Change Lesson File</label>
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Lesson Title</label>
                       <input 
-                        type="file" 
-                        onChange={(e) => setEditFormData({...editFormData, file: e.target.files?.[0] || null})}
-                        className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                        type="text" 
+                        value={editFormData.title}
+                        onChange={(e) => {
+                          setEditFormData({...editFormData, title: e.target.value});
+                          setHasUnsavedChanges(true);
+                        }}
+                        className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                        placeholder="Enter lesson title"
                       />
                     </div>
-                    <div className="flex gap-2">
+
+                    {/* Content Editor */}
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Lesson Content</label>
+                      <RichTextEditor 
+                        value={editFormData.content}
+                        onChange={(data) => {
+                          setEditFormData({...editFormData, content: data});
+                          setHasUnsavedChanges(true);
+                        }}
+                        placeholder="Update lesson content..."
+                      />
+                    </div>
+
+                    {/* File Section */}
+                    <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">
+                        Lesson File / Video
+                      </label>
+                      
+                      {/* Current File Status */}
+                      {lesson.file && (
+                        <div className="mb-3 p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                              <FileUp size={16} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+                                Current file: {lesson.file.split('/').pop()}
+                              </p>
+                              <p className="text-xs text-slate-500 dark:text-slate-400">
+                                Uploading a new file will replace this one
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* File Upload */}
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">
+                          {lesson.file ? "Replace with new file" : "Upload file"}
+                        </label>
+                        <input 
+                          type="file" 
+                          onChange={(e) => {
+                            setEditFormData({...editFormData, file: e.target.files?.[0] || null});
+                            setHasUnsavedChanges(true);
+                          }}
+                          className="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                        />
+                        {editFormData.file && (
+                          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                            New file selected: <span className="font-medium">{editFormData.file.name}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
                       <button 
                         onClick={() => handleUpdateLesson(lesson.slug)}
-                        disabled={isSaving}
-                        className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={isSaving || !editFormData.title.trim()}
+                        className="flex-1 bg-green-600 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                       >
-                        {isSaving ? <Loader2 className="animate-spin h-4 w-4" /> : <Check size={16} />} 
-                        {isSaving ? "Saving..." : "Save"}
+                        {isSaving ? <Loader2 className="animate-spin h-5 w-5" /> : <Check size={18} />} 
+                        {isSaving ? "Saving..." : "Save Changes"}
                       </button>
                       <button 
-                        onClick={() => setEditingLessonId(null)}
+                        onClick={handleCancelEdit}
                         disabled={isSaving}
-                        className="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 sm:flex-none bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <X size={16} /> Cancel
+                        <X size={18} /> Cancel
                       </button>
                     </div>
+
+                    {/* Unsaved Changes Indicator */}
+                    {hasUnsavedChanges && (
+                      <p className="text-xs text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
+                        <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+                        You have unsaved changes
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                        {lesson.file ? <FileUp size={20} /> : <FileText size={20} />}
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0">
+                        {lesson.file ? <FileUp size={24} /> : <FileText size={24} />}
                       </div>
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-slate-100">{lesson.title}</h3>
-                        <div className="flex items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg">{lesson.title}</h3>
+                        <div className="flex items-center gap-2 flex-wrap">
                           <p className="text-sm text-slate-500 dark:text-slate-400">Created on {new Date(lesson.created_at).toLocaleDateString()}</p>
                           {lesson.file && (
                             <span className="text-[10px] bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                              1 File
+                              Has File
                             </span>
                           )}
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                       <button 
                         onClick={() => handleStartEdit(lesson)}
-                        className="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-all"
+                        className="p-2.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-all"
                         title="Edit Lesson"
                       >
                         <Edit2 size={20} />
                       </button>
                       <button 
                         onClick={() => handleDeleteLesson(lesson.slug)}
-                        className="p-2 text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-all"
+                        className="p-2.5 text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition-all"
                         title="Delete Lesson"
                       >
                         <Trash2 size={20} />
