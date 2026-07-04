@@ -67,7 +67,7 @@ export default function LessonDetail() {
 
   const sanitizeContent = (html: string) => {
     const sanitized = html
-      .replace(/&nbsp;/g, ' ')     // Replace non-breaking spaces with regular spaces - THIS IS THE KEY FIX
+      .replace(/&nbsp;/g, ' ')     // Replace non-breaking spaces with regular spaces
       .replace(/\u00A0/g, ' ')     // Replace non-breaking space character with regular space
       .replace(/\u00AD/g, '')      // soft hyphen
       .replace(/\u200B/g, '')      // zero-width space
@@ -75,10 +75,9 @@ export default function LessonDetail() {
       .replace(/\u200D/g, '')      // zero-width joiner
       .replace(/\u2060/g, '')      // word joiner
       .replace(/\uFEFF/g, '')      // zero-width no-break space (BOM)
-      .replace(/&shy;/g, '')      // HTML soft hyphen
-      .replace(/&zwj;/g, '')      // HTML zero-width joiner
-      .replace(/&zwnj;/g, '')     // HTML zero-width non-joiner
-      .replace(/\s+/g, ' ')        // replace multiple spaces with single space
+      .replace(/&shy;/g, '')       // HTML soft hyphen
+      .replace(/&zwj;/g, '')       // HTML zero-width joiner
+      .replace(/&zwnj;/g, '')      // HTML zero-width non-joiner
       .trim();
     
     return sanitized;
