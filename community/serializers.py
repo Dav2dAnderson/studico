@@ -98,7 +98,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             if obj.user_id == request.user.id or any(student.id == request.user.id for student in obj.users.all()):
-                return LessonSerializer(obj.lessons.all(), many=True).data
+                return LessonSerializer(obj.lessons.order_by('created_at'), many=True).data
         return []
 
     def get_classroom(self, obj):

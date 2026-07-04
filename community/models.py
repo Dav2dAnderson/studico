@@ -114,6 +114,7 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = "Lesson"
         verbose_name_plural = "Lessons"
+        ordering = ['created_at']
         indexes = [
             models.Index(fields=["course", "created_at"]),
         ]
