@@ -524,6 +524,7 @@
   position: relative;
   max-width: 100%;
   overflow-x: auto;
+  white-space: pre !important;
   /* Allow code blocks to scroll horizontally */
 }
 
@@ -565,6 +566,7 @@
   border: none !important;
   display: block !important;
   line-height: 1.6 !important;
+  white-space: pre !important;
 }
 
 .prose code::before,
