@@ -217,6 +217,17 @@ export default function ManageCourse() {
     setSuccessMessage("");
   };
 
+  // Stable callbacks for RichTextEditor so React.memo prevents re-mounts mid-interaction.
+  // Must use functional state updates to avoid stale closure over editFormData / newLesson.
+  const handleEditContentChange = useCallback((data: string) => {
+    setEditFormData(prev => ({ ...prev, content: data }));
+    setHasUnsavedChanges(true);
+  }, []);
+
+  const handleNewLessonContentChange = useCallback((data: string) => {
+    setNewLesson(prev => ({ ...prev, content: data }));
+  }, []);
+
   if (authLoading || loading) {
     return (
       <div className="flex-1 flex items-center justify-center min-h-[60vh]">
@@ -287,7 +298,10 @@ export default function ManageCourse() {
                 type="text" 
                 required
                 value={newLesson.title}
-                onChange={(e) => setNewLesson({...newLesson, title: e.target.value})}
+                onChange={(e) => {
+                  const title = e.target.value;
+                  setNewLesson(prev => ({ ...prev, title }));
+                }}
                 className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                 placeholder="Lesson title"
               />
@@ -296,7 +310,7 @@ export default function ManageCourse() {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Content</label>
               <RichTextEditor 
                 value={newLesson.content}
-                onChange={(data) => setNewLesson({...newLesson, content: data})}
+                onChange={handleNewLessonContentChange}
                 placeholder="Lesson content (Rich text and Code supported)"
               />
             </div>
@@ -304,7 +318,10 @@ export default function ManageCourse() {
               <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Lesson File / Video</label>
               <input 
                 type="file" 
-                onChange={(e) => setNewLesson({...newLesson, file: e.target.files?.[0] || null})}
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  setNewLesson(prev => ({ ...prev, file }));
+                }}
                 className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
               />
             </div>
@@ -362,7 +379,8 @@ export default function ManageCourse() {
                         type="text" 
                         value={editFormData.title}
                         onChange={(e) => {
-                          setEditFormData({...editFormData, title: e.target.value});
+                          const title = e.target.value;
+                          setEditFormData(prev => ({ ...prev, title }));
                           setHasUnsavedChanges(true);
                         }}
                         className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
@@ -375,10 +393,7 @@ export default function ManageCourse() {
                       <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Lesson Content</label>
                       <RichTextEditor 
                         value={editFormData.content}
-                        onChange={(data) => {
-                          setEditFormData({...editFormData, content: data});
-                          setHasUnsavedChanges(true);
-                        }}
+                        onChange={handleEditContentChange}
                         placeholder="Update lesson content..."
                       />
                     </div>
@@ -416,7 +431,8 @@ export default function ManageCourse() {
                         <input 
                           type="file" 
                           onChange={(e) => {
-                            setEditFormData({...editFormData, file: e.target.files?.[0] || null});
+                            const file = e.target.files?.[0] || null;
+                            setEditFormData(prev => ({ ...prev, file }));
                             setHasUnsavedChanges(true);
                           }}
                           className="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
