@@ -118,13 +118,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
 
     const handleBlur = useCallback(() => {
         setIsFocused(false);
-        setLocalValue(value);
-        // Immediately call onChange on blur to ensure latest value is saved
+        // Flush the latest local value upstream immediately; do NOT reset
+        // localValue to the external `value` prop — that would discard the user's edits.
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
         onChange(localValue);
-    }, [value, localValue, onChange]);
+    }, [localValue, onChange]);
 
     // Cleanup timeout on unmount
     useEffect(() => {
