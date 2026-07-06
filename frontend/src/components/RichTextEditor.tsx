@@ -96,11 +96,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
     ], []);
 
     const handleChange = useCallback((content: string) => {
-        // Sanitize content to prevent &nbsp; insertion
-        const sanitized = content
-            .replace(/&nbsp;/g, ' ')
-            .replace(/\u00A0/g, ' ');
-        setLocalValue(sanitized);
+        setLocalValue(content);
         
         // Debounce the onChange call to prevent excessive updates
         if (timeoutRef.current) {
@@ -108,7 +104,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeh
         }
         
         timeoutRef.current = setTimeout(() => {
-            onChange(sanitized);
+            onChange(content);
         }, 300);
     }, [onChange]);
 
